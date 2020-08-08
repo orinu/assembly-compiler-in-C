@@ -9,42 +9,72 @@
 
 #define MAX_ROW_LENGTH 80
 
-
+ struct bits {
+        unsigned int are:3;
+        unsigned int funct:5;
+        unsigned int r_des:3;
+        unsigned int ad_des:2;
+        unsigned int r_src:3;
+        unsigned int ad_src:2;
+        unsigned int opcode:6;
+    } binary;
 
 
 const void check_line(const char *line) {
+    /* memory save of the hole line */
     char *orignal_line = malloc(80*sizeof(char));
     strcpy(orignal_line, trim(line));
 
-    
+    /* memory save of the instruction line */
     char *instruction = malloc(80*sizeof(char));
     instruction= instruction_name(line);
-    //   printf("%s ", instruction);
-
 
     /*  if command */
     if (islower(instruction[0])>0){
         if (check_if_command_exist(instruction) == 0){
             /* cmmand not exist */ 
+            /* err */
         }else {
+            /* inesrt to the binary command the opcode, funct and are*/
+            binary.opcode = get_opcode_number(instruction);
+            binary.funct = get_funct_number(instruction);
+            binary.are = 4;
+
+            /* calculate how many opareted there are in the commannd */
             int operated_number = get_operated_number(orignal_line, instruction);
-            /* handle number of operat ligal*/ 
+            /* check if number of operat ligal compare of command */ 
             if (check_operated_number(instruction,operated_number) == 1) {
+                /* src adress and src register is 0 cuz one oprate */
+                binary.ad_src = 0;
+                binary.r_src = 0;
+
                 /* after chaeck the number of opreated is ligal to the commnad*/
                 char *operated_name =  get_operated_names( trim(line_with_out_command(orignal_line, strlen(instruction))) , operated_number  );
                 /* handale oprate number of 1 */
                 if (operated_number == 1) {
-                    printf("%s \n", orignal_line);
-                    /* check if immediate */
+                    // printf("%s \n", orignal_line);
+                    /*  if immediate */
                     if (operated_name[0] == 35) {
                         printf("%s is immediate\n", operated_name);
-                    /* check if rgister */
+                        binary.ad_des =0;
+                        binary.r_des =0;
+                    /*  if register */
                     }else if(check_if_rgister(operated_name) ==1 ){
                         printf("%s is rgister\n", operated_name);
-                    /* label */
+                        binary.ad_des =3;
+                        binary.r_des = get_rgister_number(operated_name);
+                    /* if label */
                     }else {
                         printf("%s is label\n", operated_name);
-                    }
+                        binary.r_des =0;
+                        if (operated_name[0] == 38) {
+                            binary.ad_des = 2;
+                        }else {
+                            binary.ad_des = 1;
+                        }
+                    }  
+                    /* print binary code */
+                        printf("%d \n \n" ,binary); 
                 /* handle 2 number of operat ligal*/ 
                 }else if (operated_number == 2) {
                     //    printf("%s\n", operated_name);

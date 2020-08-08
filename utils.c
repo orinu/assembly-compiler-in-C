@@ -55,7 +55,7 @@ const char* instruction_name(char *line) {
     return command_name;
 }
 
-
+/* check how many oprated there are */
 int  get_operated_number(char* line, char* command_name) {
     int comma_counter = 0;
     int operated_num = 0;
@@ -71,12 +71,16 @@ int  get_operated_number(char* line, char* command_name) {
     return operated_num;
 }
 
+/*  get operated names */ 
 const char * get_operated_names(char* line, int operated_number) {
     char *operated_names_values = malloc(90 * sizeof(char));
+    /* return operand name for 1 oprand*/ 
     if (operated_number == 1){
         return line;
+    /* return operand name for 2 oprand*/ 
     } else if (operated_number == 2){
         char *operated_names;
+        /* cut the twp oprated */
         operated_names = strtok(line, ",");
         while (operated_names != NULL) { 
           strcat(operated_names_values,operated_names);  
