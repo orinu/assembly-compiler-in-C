@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
-
  struct action {
         char name[10];
         int opcode;
@@ -21,7 +19,17 @@
 int symbol_counter = 0;
 int symbol_size_memory = 7;
 
+/* rgisters */
+const char *register_name[] = {"r0","r1","r2","r3","r4","r5","r6","r7"};
 
+/* check if rgister */ 
+int check_if_rgister(char* r_name) {
+  for (int i=0; i<8; i++) {
+      if (strcmp(r_name ,register_name[i]) == 0) {
+          return 1;
+      } 
+  } return 0;
+}
 
 void init_data() 
 {

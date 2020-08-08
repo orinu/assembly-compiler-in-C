@@ -10,6 +10,8 @@
 #define MAX_ROW_LENGTH 80
 
 
+
+
 const void check_line(const char *line) {
     char *orignal_line = malloc(80*sizeof(char));
     strcpy(orignal_line, trim(line));
@@ -18,17 +20,37 @@ const void check_line(const char *line) {
     char *instruction = malloc(80*sizeof(char));
     instruction= instruction_name(line);
     //   printf("%s ", instruction);
- 
+
+
     /*  if command */
     if (islower(instruction[0])>0){
         if (check_if_command_exist(instruction) == 0){
             /* cmmand not exist */ 
         }else {
             int operated_number = get_operated_number(orignal_line, instruction);
-            /* if number of operat ligal*/ 
+            /* handle number of operat ligal*/ 
             if (check_operated_number(instruction,operated_number) == 1) {
-                /********  need to send it after trim  *//////  
-                printf("%s \n", get_operated_names( trim(line_with_out_command(orignal_line, strlen(instruction))) , operated_number  ));
+                /* after chaeck the number of opreated is ligal to the commnad*/
+                char *operated_name =  get_operated_names( trim(line_with_out_command(orignal_line, strlen(instruction))) , operated_number  );
+                /* handale oprate number of 1 */
+                if (operated_number == 1) {
+                    printf("%s \n", orignal_line);
+                    /* check if immediate */
+                    if (operated_name[0] == 35) {
+                        printf("%s is immediate\n", operated_name);
+                    /* check if rgister */
+                    }else if(check_if_rgister(operated_name) ==1 ){
+                        printf("%s is rgister\n", operated_name);
+                    /* label */
+                    }else {
+                        printf("%s is label\n", operated_name);
+                    }
+                /* handle 2 number of operat ligal*/ 
+                }else if (operated_number == 2) {
+                    //    printf("%s\n", operated_name);
+                }
+                
+                // printf ("%d \n",check_if_rgister(get_operated_names( trim(line_with_out_command(orignal_line, strlen(instruction))) , operated_number  )));
             }else {
                 /* syntax error */
             }
