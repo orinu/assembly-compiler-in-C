@@ -121,7 +121,7 @@ pSymbol = (struct symbol *)malloc(symbol_size_memory*sizeof(struct symbol));
 /* get opcod of command by name */ 
 void get_opcode(char* command_name) 
 {
-for (int i=0; i<17; i++) {
+for (int i=0; i<16; i++) {
     if (strcmp(command_name ,actions[i].name) == 0) {
         printf("the funct of %s is %d\n \n",  actions[i].name, actions[i].funct);  
     }
@@ -136,6 +136,19 @@ int check_if_command_exist(char *command_name) {
     }
 } return 0;
 }
+
+/* check if number of operated is ligal*/ 
+int check_operated_number(char *command_name, int operated_num) {
+    for (int i=0; i<16; i++) {
+      if (strcmp(command_name ,actions[i].name) == 0) {
+        if (actions[i].operated_num == operated_num ) {
+            return 1;
+        }return 0;
+      }   
+    }
+} 
+
+
 /* add symbole to the table */     //לבדוק שלא קיים, אם קיים להחזיק
 void add_symbole(char* name, int val, char* spec) {
     // cheack if there is inaf memoery for the table symbol

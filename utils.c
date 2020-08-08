@@ -14,8 +14,18 @@ const char* line_with_out_symbol(char *line, int ptl){
     return new_line;
 }
 
+/* return line with no starting symbol*/ 
+const char* line_with_out_command(char *line,  int ptl ){
+    char *line_with_out_command = malloc(90 * sizeof(char));
+    for (int i=ptl, j=0; i<strlen(line); i++, j++ ) {
+        line_with_out_command[j] = line[i];
+    }
+    return line_with_out_command;
+}
+
 const char* trim(char *line) {
-    char line_with_out_spaces[25];
+    char *line_with_out_spaces = malloc(90 * sizeof(char));
+
     int start =0;
     int end =strlen(line)-1;
 
@@ -32,11 +42,8 @@ const char* trim(char *line) {
     {
         end--;
     }
-
-    // printf("%d",(end-start));
-    // char *line_with_out_spaces=(char *)malloc((end-start)*sizeof(char));
         
-    for (int j=0; start<end; start++ ,j++) {
+    for (int j=0; start<end+1; start++ ,j++) {
         line_with_out_spaces[j] = line[start];
     }
     return line_with_out_spaces;
@@ -49,7 +56,7 @@ const char* instruction_name(char *line) {
 }
 
 
-const void check_operated(char* line, char* command_name) {
+int  get_operated_number(char* line, char* command_name) {
     int comma_counter = 0;
     int operated_num = 0;
     // printf("line is: %s command  is: %s \n", line, command_name );
@@ -57,14 +64,30 @@ const void check_operated(char* line, char* command_name) {
         if (line[i] == 44) {
             comma_counter ++;
         }
-    } //printf("%d",comma_counter);
+    } 
     if ( (strcmp(command_name ,"stop") !=0 ) && (strcmp(command_name ,"rts") !=0 ) ){
         operated_num= comma_counter++;
-        // printf("true ");
     }operated_num=comma_counter;  
-    // printf("operated_num is: %d \n", operated_num );
-
+    return operated_num;
 }
+
+const char * get_operated_names(char* line, int operated_number) {
+    char *operated_names_values = malloc(90 * sizeof(char));
+    if (operated_number == 1){
+        return line;
+    } else if (operated_number == 2){
+        char *operated_names;
+        operated_names = strtok(line, ",");
+        while (operated_names != NULL) { 
+          strcat(operated_names_values,operated_names);  
+          strcat(operated_names_values," ");  
+          operated_names = strtok(NULL, ",");  
+        }
+        return operated_names_values; 
+    }
+}
+
+
 // const void check_line(const char *line) {
 //     char *instruction= instruction_name(line);
 //     /*  if cmmand */

@@ -12,19 +12,26 @@
 
 const void check_line(const char *line) {
     char *orignal_line = malloc(80*sizeof(char));
-    strcpy(orignal_line, line);
+    strcpy(orignal_line, trim(line));
 
     
     char *instruction = malloc(80*sizeof(char));
     instruction= instruction_name(line);
-              printf("%s \n", instruction);
+    //   printf("%s ", instruction);
  
-    /*  if cmmand */
+    /*  if command */
     if (islower(instruction[0])>0){
         if (check_if_command_exist(instruction) == 0){
             /* cmmand not exist */ 
         }else {
-            check_operated(orignal_line, instruction);
+            int operated_number = get_operated_number(orignal_line, instruction);
+            /* if number of operat ligal*/ 
+            if (check_operated_number(instruction,operated_number) == 1) {
+                /********  need to send it after trim  *//////  
+                printf("%s \n", get_operated_names( trim(line_with_out_command(orignal_line, strlen(instruction))) , operated_number  ));
+            }else {
+                /* syntax error */
+            }
     
         }
     }
