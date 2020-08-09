@@ -67,6 +67,7 @@ const void check_line(const char *line) {
                     }else {
                         printf("%s is label\n", operated_name);
                         binary.r_des =0;
+                        /* check if &*/
                         if (operated_name[0] == 38) {
                             binary.ad_des = 2;
                         }else {
@@ -74,10 +75,30 @@ const void check_line(const char *line) {
                         }
                     }  
                     /* print binary code */
-                        printf("%d \n \n" ,binary); 
+                        // printf("%d \n \n" ,binary); 
                 /* handle 2 number of operat ligal*/ 
                 }else if (operated_number == 2) {
-                    //    printf("%s\n", operated_name);
+                    char *first_operat = malloc(10 * sizeof(char));
+                    char *sec_operat = malloc(10 * sizeof(char));
+                    int i = 0;
+                    int j =0;
+                    /* get first op */
+                    while (operated_name[i] != 32)
+                    {
+                        first_operat[i] = operated_name[i];
+                        i++;
+                    }
+                    first_operat = trim(first_operat);
+                
+                    /* get sec op */
+                    while (operated_name[i] != '\0')
+                    {
+                        sec_operat[j] = operated_name[i];
+                        i++;
+                        j++;
+                    }
+                    sec_operat = trim(sec_operat);
+
                 }
                 
                 // printf ("%d \n",check_if_rgister(get_operated_names( trim(line_with_out_command(orignal_line, strlen(instruction))) , operated_number  )));
