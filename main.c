@@ -19,8 +19,67 @@
         unsigned int opcode:6;
     } binary;
 
+void init_binary_struct() {
+        binary.are = 0;
+        binary.funct = 0;
+        binary.r_des = 0;
+        binary.ad_des = 0;
+        binary.r_src = 0;
+        binary.ad_src = 0;
+        binary.opcode = 0;
+}
+
+void des_handle(char *operated_name) {
+/*  if immediate */
+  if (operated_name[0] == 35) {
+      printf("%s is immediate\n", operated_name);
+      binary.ad_des =0;
+      binary.r_des =0;
+  /*  if register */
+  }else if(check_if_rgister(operated_name) ==1 ){
+      printf("%s is rgister\n", operated_name);
+      binary.ad_des =3;
+      binary.r_des = get_rgister_number(operated_name);
+  /* if label */
+  }else {
+      printf("%s is label\n", operated_name);
+      binary.r_des =0;
+      /* check if &*/
+      if (operated_name[0] == 38) {
+          binary.ad_des = 2;
+      }else {
+          binary.ad_des = 1;
+      }
+  }  
+}
+
+void src_handle(char *operated_name) {
+/*  if immediate # */
+  if (operated_name[0] == 35) {
+      printf("%s is immediate\n", operated_name);
+      binary.ad_src =0;
+      binary.r_src =0;
+  /*  if register */
+  }else if(check_if_rgister(operated_name) ==1 ){
+      printf("%s is rgister\n", operated_name);
+      binary.ad_src =3;
+      binary.r_src = get_rgister_number(operated_name);
+  /* if label */
+  }else {
+      printf("%s is label\n", operated_name);
+      binary.r_src =0;
+      /* check if &*/
+      if (operated_name[0] == 38) {
+          binary.ad_src = 2;
+      }else {
+          binary.ad_src = 1;
+      }
+  }  
+}
 
 const void check_line(const char *line) {
+    /* init binary data */
+    init_binary_struct();
     /* memory save of the hole line */
     char *orignal_line = malloc(80*sizeof(char));
     strcpy(orignal_line, trim(line));
@@ -48,34 +107,17 @@ const void check_line(const char *line) {
                 binary.ad_src = 0;
                 binary.r_src = 0;
 
+printf("%s \n", orignal_line);
+
                 /* after chaeck the number of opreated is ligal to the commnad*/
                 char *operated_name =  get_operated_names( trim(line_with_out_command(orignal_line, strlen(instruction))) , operated_number  );
                 /* handale oprate number of 1 */
                 if (operated_number == 1) {
-                    // printf("%s \n", orignal_line);
-                    /*  if immediate */
-                    if (operated_name[0] == 35) {
-                        printf("%s is immediate\n", operated_name);
-                        binary.ad_des =0;
-                        binary.r_des =0;
-                    /*  if register */
-                    }else if(check_if_rgister(operated_name) ==1 ){
-                        printf("%s is rgister\n", operated_name);
-                        binary.ad_des =3;
-                        binary.r_des = get_rgister_number(operated_name);
-                    /* if label */
-                    }else {
-                        printf("%s is label\n", operated_name);
-                        binary.r_des =0;
-                        /* check if &*/
-                        if (operated_name[0] == 38) {
-                            binary.ad_des = 2;
-                        }else {
-                            binary.ad_des = 1;
-                        }
-                    }  
+                    
+                    des_handle(operated_name);
+
                     /* print binary code */
-                        // printf("%d \n \n" ,binary); 
+                        printf("%d \n \n" ,binary); 
                 /* handle 2 number of operat ligal*/ 
                 }else if (operated_number == 2) {
                     char *first_operat = malloc(10 * sizeof(char));
@@ -98,7 +140,11 @@ const void check_line(const char *line) {
                         j++;
                     }
                     sec_operat = trim(sec_operat);
+                    /* insert binary code after analaze */
+                    src_handle(first_operat);
+                    des_handle(sec_operat);
 
+                    printf("%d \n \n" ,binary); 
                 }
                 
                 // printf ("%d \n",check_if_rgister(get_operated_names( trim(line_with_out_command(orignal_line, strlen(instruction))) , operated_number  )));
