@@ -19,6 +19,11 @@
         unsigned int opcode:6;
     } binary;
 
+int dc =0;
+int ic =100;
+int data[2000];
+
+
 void init_binary_struct() {
         binary.are = 0;
         binary.funct = 0;
@@ -32,17 +37,17 @@ void init_binary_struct() {
 void des_handle(char *operated_name) {
 /*  if immediate */
   if (operated_name[0] == 35) {
-      printf("%s is immediate\n", operated_name);
+    //   printf("%s is immediate\n", operated_name);
       binary.ad_des =0;
       binary.r_des =0;
   /*  if register */
   }else if(check_if_rgister(operated_name) ==1 ){
-      printf("%s is rgister\n", operated_name);
+    //   printf("%s is rgister\n", operated_name);
       binary.ad_des =3;
       binary.r_des = get_rgister_number(operated_name);
   /* if label */
   }else {
-      printf("%s is label\n", operated_name);
+    //   printf("%s is label\n", operated_name);
       binary.r_des =0;
       /* check if &*/
       if (operated_name[0] == 38) {
@@ -56,17 +61,17 @@ void des_handle(char *operated_name) {
 void src_handle(char *operated_name) {
 /*  if immediate # */
   if (operated_name[0] == 35) {
-      printf("%s is immediate\n", operated_name);
+    //   printf("%s is immediate\n", operated_name);
       binary.ad_src =0;
       binary.r_src =0;
   /*  if register */
   }else if(check_if_rgister(operated_name) ==1 ){
-      printf("%s is rgister\n", operated_name);
+    //   printf("%s is rgister\n", operated_name);
       binary.ad_src =3;
       binary.r_src = get_rgister_number(operated_name);
   /* if label */
   }else {
-      printf("%s is label\n", operated_name);
+    //   printf("%s is label\n", operated_name);
       binary.r_src =0;
       /* check if &*/
       if (operated_name[0] == 38) {
@@ -107,7 +112,8 @@ const void check_line(const char *line) {
                 binary.ad_src = 0;
                 binary.r_src = 0;
 
-printf("%s \n", orignal_line);
+                /* print the command */
+                // printf("%s \n", orignal_line);
 
                 /* after chaeck the number of opreated is ligal to the commnad*/
                 char *operated_name =  get_operated_names( trim(line_with_out_command(orignal_line, strlen(instruction))) , operated_number  );
@@ -117,7 +123,7 @@ printf("%s \n", orignal_line);
                     des_handle(operated_name);
 
                     /* print binary code */
-                        printf("%d \n \n" ,binary); 
+                        // printf("%d \n \n" ,binary); 
                 /* handle 2 number of operat ligal*/ 
                 }else if (operated_number == 2) {
                     char *first_operat = malloc(10 * sizeof(char));
@@ -140,11 +146,13 @@ printf("%s \n", orignal_line);
                         j++;
                     }
                     sec_operat = trim(sec_operat);
+                    
                     /* insert binary code after analaze */
                     src_handle(first_operat);
                     des_handle(sec_operat);
 
-                    printf("%d \n \n" ,binary); 
+                    /* print the binary value */
+                    // printf("%d \n \n" ,binary); 
                 }
                 
                 // printf ("%d \n",check_if_rgister(get_operated_names( trim(line_with_out_command(orignal_line, strlen(instruction))) , operated_number  )));
@@ -156,7 +164,46 @@ printf("%s \n", orignal_line);
     }
     /*  if spec */
     if ((instruction[0]) == 46){
-        // printf("%s is spec \n",instruction);
+        printf("%s is spec \n",instruction);
+        /* 4 handles */
+
+        /* if data */
+        if( strcmp(instruction ,".data") ==0 ){
+            /* string without ".data" */
+            char *data_string = trim(line_with_out_command(orignal_line,strlen(instruction)));
+            /* useing tem char for savind the value and temp pointer j */
+            char temp[20];
+            int j=0;
+            /* run on number with out the ".data"*/
+            for (int i =0; i<strlen(data_string); i++) {
+                /* run on the data until comma*/
+                if (data_string[i] != 44) {
+                    temp[j] = data_string[i];
+                    j++;
+                /* if mach comma save the number and init the temp var*/
+                }if (data_string[i] == 44) {
+                    /* save data*/
+                    data[dc] = atoi(temp);
+                    dc++;
+                    /* init temp var*/
+                    char temp[20];
+                    j=0;
+                }   
+                
+            }
+            /* after finish to analayze the data save the last number or the first one (depond on the comma)*/
+            data[dc] = atoi(temp);
+            dc++;
+
+            /* print the data array and dc counter*/
+            printf("the data array is: ");
+            for (int i=0; i<dc ;i++) {
+              printf(" %d ,",data[i]);
+            }printf("\n");
+            printf("the dc is: %d \n",dc);
+            
+        }
+        
     }
 }
 
