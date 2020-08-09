@@ -17,11 +17,13 @@
         unsigned int r_src:3;
         unsigned int ad_src:2;
         unsigned int opcode:6;
-    } binary;
+    } binary ;
 
 int dc =0;
-int ic =100;
+int ic =0;
+int ic_temp = 1;
 int data[2000];
+int instruction_data[2000];
 
 
 void init_binary_struct() {
@@ -37,9 +39,18 @@ void init_binary_struct() {
 void des_handle(char *operated_name) {
 /*  if immediate */
   if (operated_name[0] == 35) {
+      /* get number of immadte*/
+      char number_of_imm[100];
+      for (int i=0;i<strlen(operated_name);i++) {
+          number_of_imm[i]=operated_name[i+1];
+      }
     //   printf("%s is immediate\n", operated_name);
+      /* insert the binary part of command*/
       binary.ad_des =0;
       binary.r_des =0;
+      /* insert the immdate value to the ic array*/
+      instruction_data[ic_temp] = atoi(number_of_imm);
+      ic_temp++;
   /*  if register */
   }else if(check_if_rgister(operated_name) ==1 ){
     //   printf("%s is rgister\n", operated_name);
@@ -49,6 +60,8 @@ void des_handle(char *operated_name) {
   }else {
     //   printf("%s is label\n", operated_name);
       binary.r_des =0;
+      instruction_data[ic_temp] = -2;
+      ic_temp++;
       /* check if &*/
       if (operated_name[0] == 38) {
           binary.ad_des = 2;
@@ -61,9 +74,16 @@ void des_handle(char *operated_name) {
 void src_handle(char *operated_name) {
 /*  if immediate # */
   if (operated_name[0] == 35) {
-    //   printf("%s is immediate\n", operated_name);
+      /* get number of immadte*/
+      char number_of_imm[100];
+      for (int i=0;i<strlen(operated_name);i++) {
+          number_of_imm[i]=operated_name[i+1];
+      }
       binary.ad_src =0;
       binary.r_src =0;
+      /* insert the immdate value to the ic array*/
+      instruction_data[ic_temp] = atoi(number_of_imm);
+      ic_temp++;
   /*  if register */
   }else if(check_if_rgister(operated_name) ==1 ){
     //   printf("%s is rgister\n", operated_name);
@@ -73,6 +93,8 @@ void src_handle(char *operated_name) {
   }else {
     //   printf("%s is label\n", operated_name);
       binary.r_src =0;
+      instruction_data[ic_temp] = -2;
+      ic_temp++;
       /* check if &*/
       if (operated_name[0] == 38) {
           binary.ad_src = 2;
@@ -113,7 +135,7 @@ const void check_line(const char *line) {
                 binary.r_src = 0;
 
                 /* print the command */
-                // printf("%s \n", orignal_line);
+                printf("%s \n", orignal_line);
 
                 /* after chaeck the number of opreated is ligal to the commnad*/
                 char *operated_name =  get_operated_names( trim(line_with_out_command(orignal_line, strlen(instruction))) , operated_number  );
@@ -121,9 +143,15 @@ const void check_line(const char *line) {
                 if (operated_number == 1) {
                     
                     des_handle(operated_name);
-
+       
+                    
+                    int *k = &binary;
+                    instruction_data[ic] = *k;
+                    ic++;
                     /* print binary code */
-                        // printf("%d \n \n" ,binary); 
+                    printf(" %d \n \n" ,*k );
+
+
                 /* handle 2 number of operat ligal*/ 
                 }else if (operated_number == 2) {
                     char *first_operat = malloc(10 * sizeof(char));
@@ -150,12 +178,25 @@ const void check_line(const char *line) {
                     /* insert binary code after analaze */
                     src_handle(first_operat);
                     des_handle(sec_operat);
+                    int *k = &binary;
+                    instruction_data[ic] = *k;
+                    ic++;
+                     printf(" %d \n \n" ,*k );
 
                     /* print the binary value */
                     // printf("%d \n \n" ,binary); 
                 }
-                
-                // printf ("%d \n",check_if_rgister(get_operated_names( trim(line_with_out_command(orignal_line, strlen(instruction))) , operated_number  )));
+                /* loact ic pointers */
+                  /* if labale or immadete once or two so ic and ic_temp up. the next pos for insert is ic_temp so ic = ic_temp*/
+                if (ic < ic_temp) {
+                    ic = ic_temp;
+                    ic_temp++;
+                }
+                /* if no labale and no immadete the pointer are equle [ic correct and temp need to +1]*/
+                if (ic == ic_temp) {
+                    ic_temp++;
+                }
+
             }else {
                 /* syntax error */
             }
@@ -195,14 +236,24 @@ const void check_line(const char *line) {
             data[dc] = atoi(temp);
             dc++;
 
-            /* print the data array and dc counter*/
-            printf("the data array is: ");
-            for (int i=0; i<dc ;i++) {
-              printf(" %d ,",data[i]);
-            }printf("\n");
-            printf("the dc is: %d \n",dc);
-            
         }
+        /* if string */
+        if( strcmp(instruction ,".string") ==0 ){
+          /* get data without ".string" */
+          char *data_string = trim(line_with_out_command(orignal_line,strlen(instruction))); 
+          int ascii_code; 
+          /* run on the data and insert to data array */ 
+          for (int i=1;i<strlen(data_string)-1; i++) {
+              ascii_code = data_string[i];
+              data[dc] = ascii_code;
+              dc++;
+          }
+          /* add in the end of the sting 0 and up dc counter*/
+          data[dc] = 0;                    
+          dc++;
+        }
+
+
         
     }
 }
@@ -242,7 +293,6 @@ int main(int argc, char *argv[]){
                         char symbol_name[30] = "";
                         char spec[30] = "code";
                         char *ret;
-                        int ic = 100;
 
                         /* get the name of the symbol*/
                         strncpy(symbol_name,line , j);
@@ -263,7 +313,8 @@ int main(int argc, char *argv[]){
                             // printf(" %s \n ", spec) ; 
                         }
                         /* aad symbol to the symbol table */
-                        // add_symbole(symbol_name, ic, spec)
+                        add_symbole(symbol_name, ic, spec);
+
                         // char *returned_line =  trim(line_with_out_symbol(line, j+1));
                         // printf("%s \n ",returned_line);
                         // printf("%d \n  ",returned_line[0]);
@@ -279,6 +330,19 @@ int main(int argc, char *argv[]){
           
 
             }
+                     /* print the data array and dc counter*/
+            printf("the data array is: ");
+            for (int i=0; i<dc ;i++) {
+              printf(" %d ,",data[i]);
+            }printf("\n");
+            printf("the dc is: %d \n",dc);
+            /* print the data array and dc counter*/
+
+            printf("the ic array is: ");
+            for (int i=0; i<ic ;i++) {
+              printf(" %d ,",instruction_data[i]);
+            }printf("\n");
+            printf("the ic is: %d \n",ic);
         }
         else 
         {

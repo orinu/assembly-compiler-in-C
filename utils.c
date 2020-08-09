@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <math.h>
 
+
+
 /* return line with no starting symbol*/ 
 const char* line_with_out_symbol(char *line, int ptl){
     char *new_line = malloc(90 * sizeof(char));
