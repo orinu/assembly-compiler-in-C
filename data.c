@@ -159,7 +159,8 @@ int check_if_command_exist(char *command_name) {
     if (strcmp(command_name ,actions[i].name) == 0) {
         return 1;
     }
-} return 0;
+}  
+return 0;
 }
 
 /* check if number of operated is ligal*/ 

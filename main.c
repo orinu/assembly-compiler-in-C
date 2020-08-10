@@ -24,6 +24,8 @@ int ic =0;
 int ic_temp = 1;
 int data[2000];
 int instruction_data[2000];
+const char *label_names[100];
+int label_ptl =0;
 
 
 void init_binary_struct() {
@@ -34,6 +36,26 @@ void init_binary_struct() {
         binary.r_src = 0;
         binary.ad_src = 0;
         binary.opcode = 0;
+}
+
+void update_pointers() {
+    /* update pointers */
+    /* if labale or immadete once or two so ic and ic_temp up. the next pos for insert is ic_temp so ic = ic_temp*/
+    if (ic < ic_temp) {
+        ic = ic_temp;
+        ic_temp++;
+    }
+    /* if no labale and no immadete the pointer are equle [ic correct and temp need to +1]*/
+    if (ic == ic_temp) {
+        ic_temp++;
+    }
+}
+
+void zero_oprated() {
+        binary.r_des = 0;
+        binary.ad_des = 0;
+        binary.r_src = 0;
+        binary.ad_src = 0;
 }
 
 void des_handle(char *operated_name) {
@@ -60,8 +82,11 @@ void des_handle(char *operated_name) {
   }else {
     //   printf("%s is label\n", operated_name);
       binary.r_des =0;
-      instruction_data[ic_temp] = -2;
+      instruction_data[ic_temp] = -999898;
       ic_temp++;
+      /* add to label array */
+      label_names[label_ptl] = operated_name;
+      label_ptl++;
       /* check if &*/
       if (operated_name[0] == 38) {
           binary.ad_des = 2;
@@ -93,8 +118,11 @@ void src_handle(char *operated_name) {
   }else {
     //   printf("%s is label\n", operated_name);
       binary.r_src =0;
-      instruction_data[ic_temp] = -2;
+      instruction_data[ic_temp] = -999898;
       ic_temp++;
+      /* add to label array */
+      label_names[label_ptl] = operated_name;
+      label_ptl++;
       /* check if &*/
       if (operated_name[0] == 38) {
           binary.ad_src = 2;
@@ -113,11 +141,15 @@ const void check_line(const char *line) {
 
     /* memory save of the instruction line */
     char *instruction = malloc(80*sizeof(char));
-    instruction= instruction_name(line);
+    instruction= trim(instruction_name(line));
 
     /*  if command */
     if (islower(instruction[0])>0){
+            printf("the line is :%s \n",line);
+            // printf("the instruction is :%s \n",instruction);
         if (check_if_command_exist(instruction) == 0){
+            // printf("the line is :%s \n",line);
+            // printf("the instruction is :%s \n",instruction);
             /* cmmand not exist */ 
             /* err */
         }else {
@@ -135,12 +167,23 @@ const void check_line(const char *line) {
                 binary.r_src = 0;
 
                 /* print the command */
-                printf("%s \n", orignal_line);
+                // printf("%s \n", orignal_line);
+                // printf("the operated_number is %d \n", operated_number);
 
                 /* after chaeck the number of opreated is ligal to the commnad*/
                 char *operated_name =  get_operated_names( trim(line_with_out_command(orignal_line, strlen(instruction))) , operated_number  );
+                /* handale oprate number of 0 */
+                if (operated_number == 0) {
+                    zero_oprated();
+                    int *k = &binary;
+                    instruction_data[ic] = *k;
+                    ic++;
+                    update_pointers();
+                       /* print binary code */
+                    printf(" %d \n \n" ,*k );
+                }
                 /* handale oprate number of 1 */
-                if (operated_number == 1) {
+                else if (operated_number == 1) {
                     
                     des_handle(operated_name);
        
@@ -148,6 +191,7 @@ const void check_line(const char *line) {
                     int *k = &binary;
                     instruction_data[ic] = *k;
                     ic++;
+                    update_pointers();
                     /* print binary code */
                     printf(" %d \n \n" ,*k );
 
@@ -181,21 +225,13 @@ const void check_line(const char *line) {
                     int *k = &binary;
                     instruction_data[ic] = *k;
                     ic++;
+                    update_pointers();
                      printf(" %d \n \n" ,*k );
 
                     /* print the binary value */
                     // printf("%d \n \n" ,binary); 
                 }
-                /* loact ic pointers */
-                  /* if labale or immadete once or two so ic and ic_temp up. the next pos for insert is ic_temp so ic = ic_temp*/
-                if (ic < ic_temp) {
-                    ic = ic_temp;
-                    ic_temp++;
-                }
-                /* if no labale and no immadete the pointer are equle [ic correct and temp need to +1]*/
-                if (ic == ic_temp) {
-                    ic_temp++;
-                }
+
 
             }else {
                 /* syntax error */
@@ -226,6 +262,10 @@ const void check_line(const char *line) {
                     /* save data*/
                     data[dc] = atoi(temp);
                     dc++;
+                    /* add to ic */
+                    instruction_data[ic] = atoi(temp);
+                    ic++; 
+                    update_pointers();
                     /* init temp var*/
                     char temp[20];
                     j=0;
@@ -235,6 +275,11 @@ const void check_line(const char *line) {
             /* after finish to analayze the data save the last number or the first one (depond on the comma)*/
             data[dc] = atoi(temp);
             dc++;
+            /* add to ic */
+            instruction_data[ic] = atoi(temp);
+            ic++; 
+            update_pointers();
+            
 
         }
         /* if string */
@@ -247,15 +292,21 @@ const void check_line(const char *line) {
               ascii_code = data_string[i];
               data[dc] = ascii_code;
               dc++;
+              /* add to ic */
+              instruction_data[ic] = ascii_code;
+              ic++; 
+              update_pointers();
           }
           /* add in the end of the sting 0 and up dc counter*/
           data[dc] = 0;                    
           dc++;
-        }
-
-
-        
+        /* add to ic */
+        instruction_data[ic] = 0;
+        ic++; 
+        update_pointers();
+        }       
     }
+
 }
 
 
@@ -327,22 +378,28 @@ int main(int argc, char *argv[]){
                 }  
                 check_line(line);
                 
-          
 
             }
-                     /* print the data array and dc counter*/
+            /* print the data array and dc counter*/
             printf("the data array is: ");
             for (int i=0; i<dc ;i++) {
               printf(" %d ,",data[i]);
             }printf("\n");
             printf("the dc is: %d \n",dc);
+            
             /* print the data array and dc counter*/
-
             printf("the ic array is: ");
             for (int i=0; i<ic ;i++) {
               printf(" %d ,",instruction_data[i]);
             }printf("\n");
             printf("the ic is: %d \n",ic);
+
+            /* print the label array and pointer */
+            printf("the label_ptl array is: ");
+            for (int i=0; i<label_ptl ;i++) {
+              printf(" %s ,",label_names[i]);
+            }printf("\n");
+            printf("the label_ptl is: %d \n",label_ptl);
         }
         else 
         {
