@@ -280,9 +280,8 @@ const void check_line(const char *line) {
             instruction_data[ic] = atoi(temp);
             ic++; 
             update_pointers();
-            
-
         }
+
         /* if string */
         if( strcmp(instruction ,".string") ==0 ){
           /* get data without ".string" */
@@ -306,6 +305,12 @@ const void check_line(const char *line) {
         ic++; 
         update_pointers();
         }       
+
+        /* if extern */
+        if( strcmp(instruction ,".extern") ==0 ){
+            char *data_string = trim(line_with_out_command(orignal_line,strlen(instruction))); 
+            add_symbole(data_string, 0, "external");
+        }       
     }
 
 }
@@ -315,6 +320,7 @@ void first_run(FILE *fp) {
     char line[80];
      /* run on evrey line in the file */ 
             while(fgets(line,  MAX_ROW_LENGTH , fp) != NULL) {
+                int start_with_symbol_flag = 0;
                 /* print line*/ 
                 // printf("%s \n",line); 
                 /* run on evrey char in line */
@@ -323,6 +329,7 @@ void first_run(FILE *fp) {
                     /* SYMBOL */ 
                     /*  if there is ":" symbol name*/
                     if ( line[j] == ':') {
+                        start_with_symbol_flag =1;
                         char symbol_name[30] = "";
                         char spec[30] = "code";
                         char *ret;
@@ -357,11 +364,11 @@ void first_run(FILE *fp) {
 
                         check_line(line_with_out_symbol(line, j+1));
                     }
-                }  
-                check_line(line);
-                
-
+                } if (start_with_symbol_flag == 0 ) {
+                    check_line(line);
+                }
             }
+
             /* print the data array and dc counter*/
             printf("the data array is: ");
             for (int i=0; i<dc ;i++) {
