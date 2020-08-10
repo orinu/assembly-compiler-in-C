@@ -2,9 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 #include "data.h"
-#include "data.c"
-#include "utils.c"
+#include "utils.h"
+#include "first_run.h"
+
 
 
 #define MAX_ROW_LENGTH 80
@@ -63,16 +65,23 @@ void des_handle(char *operated_name) {
   if (operated_name[0] == 35) {
       /* get number of immadte*/
       char number_of_imm[100];
-      for (int i=0;i<strlen(operated_name);i++) {
+      int i;
+      for (i=0;i<strlen(operated_name);i++) {
           number_of_imm[i]=operated_name[i+1];
       }
     //   printf("%s is immediate\n", operated_name);
       /* insert the binary part of command*/
       binary.ad_des =0;
       binary.r_des =0;
+
       /* insert the immdate value to the ic array*/
-      instruction_data[ic_temp] = atoi(number_of_imm);
+      /* add 100 to lsb */
+      int immadte = atoi(number_of_imm)<<3;
+      immadte = immadte ^ 4;
+      /* save */
+      instruction_data[ic_temp] = immadte;
       ic_temp++;
+
   /*  if register */
   }else if(check_if_rgister(operated_name) ==1 ){
     //   printf("%s is rgister\n", operated_name);
@@ -101,14 +110,20 @@ void src_handle(char *operated_name) {
   if (operated_name[0] == 35) {
       /* get number of immadte*/
       char number_of_imm[100];
-      for (int i=0;i<strlen(operated_name);i++) {
+      int i;
+      for ( i=0;i<strlen(operated_name);i++) {
           number_of_imm[i]=operated_name[i+1];
       }
       binary.ad_src =0;
       binary.r_src =0;
       /* insert the immdate value to the ic array*/
-      instruction_data[ic_temp] = atoi(number_of_imm);
+      /* add 100 to lsb */
+      int immadte = atoi(number_of_imm)<<3;
+      immadte = immadte ^ 4;
+      /* save */
+      instruction_data[ic_temp] = immadte;
       ic_temp++;
+
   /*  if register */
   }else if(check_if_rgister(operated_name) ==1 ){
     //   printf("%s is rgister\n", operated_name);
@@ -253,7 +268,8 @@ const void check_line(const char *line) {
             char temp[20];
             int j=0;
             /* run on number with out the ".data"*/
-            for (int i =0; i<strlen(data_string); i++) {
+            int i;
+            for ( i =0; i<strlen(data_string); i++) {
                 /* run on the data until comma*/
                 if (data_string[i] != 44) {
                     temp[j] = data_string[i];
@@ -288,7 +304,8 @@ const void check_line(const char *line) {
           char *data_string = trim(line_with_out_command(orignal_line,strlen(instruction))); 
           int ascii_code; 
           /* run on the data and insert to data array */ 
-          for (int i=1;i<strlen(data_string)-1; i++) {
+          int i;
+          for ( i=1;i<strlen(data_string)-1; i++) {
               ascii_code = data_string[i];
               data[dc] = ascii_code;
               dc++;
@@ -325,7 +342,8 @@ void first_run(FILE *fp) {
                 // printf("%s \n",line); 
                 /* run on evrey char in line */
                 int line_length = strlen(line);
-                for (int j=0; j< line_length; j++) {
+                int j;
+                for ( j=0; j< line_length; j++) {
                     /* SYMBOL */ 
                     /*  if there is ":" symbol name*/
                     if ( line[j] == ':') {
@@ -371,21 +389,22 @@ void first_run(FILE *fp) {
 
             /* print the data array and dc counter*/
             printf("the data array is: ");
-            for (int i=0; i<dc ;i++) {
+            int i;
+            for ( i=0; i<dc ;i++) {
               printf(" %d ,",data[i]);
             }printf("\n");
             printf("the dc is: %d \n",dc);
             
             /* print the data array and dc counter*/
             printf("the ic array is: ");
-            for (int i=0; i<ic ;i++) {
+            for ( i=0; i<ic ;i++) {
               printf(" %d ,",instruction_data[i]);
             }printf("\n");
             printf("the ic is: %d \n",ic);
 
             /* print the label array and pointer */
             printf("the label_ptl array is: ");
-            for (int i=0; i<label_ptl ;i++) {
+            for ( i=0; i<label_ptl ;i++) {
               printf(" %s ,",label_names[i]);
             }printf("\n");
             printf("the label_ptl is: %d \n",label_ptl);

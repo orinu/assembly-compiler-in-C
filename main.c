@@ -2,16 +2,18 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "first_run.c"
 
+#include "data.h"
+#include "utils.h"
+#include "first_run.h"
 
 
 int main(int argc, char *argv[]){
     init_data();
     FILE *fp;
   
-
-    for(int i = 1; i < argc; i++)
+    int i;
+    for( i = 1; i < argc; i++)
     {    
         /* merage file name with .as */ 
         char* filename = malloc(strlen(argv[i])+4);
@@ -26,13 +28,14 @@ int main(int argc, char *argv[]){
 
             /* trsfer file to first run */
             first_run(fp);
+            
            
         }else 
         {
             printf("fuck u all , the file not exit biaaaaatch \n");
         }
     
-    // free(filename);
+    
 
 
 	return 0;

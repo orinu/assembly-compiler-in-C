@@ -4,12 +4,14 @@
 #include <stdlib.h>
 #include <math.h>
 
-
+#include "utils.h"
 
 /* return line with no starting symbol*/ 
-const char* line_with_out_symbol(char *line, int ptl){
+ char* line_with_out_symbol(char *line, int ptl){
     char *new_line = malloc(90 * sizeof(char));
-    for (int i=ptl, j=0; i<strlen(line); i++, j++ ) {
+    int i;
+    int j;
+    for ( i=ptl, j=0; i<strlen(line); i++, j++ ) {
         new_line[j] = line[i];
     }
     // printf("%s",new_line);
@@ -17,15 +19,17 @@ const char* line_with_out_symbol(char *line, int ptl){
 }
 
 /* return line with no starting symbol*/ 
-const char* line_with_out_command(char *line,  int ptl ){
+ char* line_with_out_command(char *line,  int ptl ){
     char *line_with_out_command = malloc(90 * sizeof(char));
-    for (int i=ptl, j=0; i<strlen(line); i++, j++ ) {
+    int i;
+    int j;
+    for ( i=ptl, j=0; i<strlen(line); i++, j++ ) {
         line_with_out_command[j] = line[i];
     }
     return line_with_out_command;
 }
 
-const char* trim(char *line) {
+ char* trim(char *line) {
     char *line_with_out_spaces = malloc(90 * sizeof(char));
 
     int start =0;
@@ -44,14 +48,14 @@ const char* trim(char *line) {
     {
         end--;
     }
-        
+    int j;
     for (int j=0; start<end+1; start++ ,j++) {
         line_with_out_spaces[j] = line[start];
     }
     return line_with_out_spaces;
 }
 
-const char* instruction_name(char *line) {
+ char* instruction_name(char *line) {
     char *command_name;
     command_name = strtok(line, " ");
     return command_name;
@@ -62,7 +66,8 @@ int  get_operated_number(char* line, char* command_name) {
     int comma_counter = 0;
     int operated_num = 0;
     // printf("line is: %s command  is: %s \n", line, command_name );
-    for (int i =0; i<strlen(line)-1 ; i++){
+    int i;
+    for ( i =0; i<strlen(line)-1 ; i++){
         if (line[i] == 44) {
             comma_counter ++;
         }
