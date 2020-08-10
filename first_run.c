@@ -387,27 +387,27 @@ void first_run(FILE *fp) {
                 }
             }
 
-            /* print the data array and dc counter*/
-            printf("the data array is: ");
-            int i;
-            for ( i=0; i<dc ;i++) {
-              printf(" %d ,",data[i]);
-            }printf("\n");
-            printf("the dc is: %d \n",dc);
+            // /* print the data array and dc counter*/
+            // printf("the data array is: ");
+            // int i;
+            // for ( i=0; i<dc ;i++) {
+            //   printf(" %d ,",data[i]);
+            // }printf("\n");
+            // printf("the dc is: %d \n",dc);
             
-            /* print the data array and dc counter*/
-            printf("the ic array is: ");
-            for ( i=0; i<ic ;i++) {
-              printf(" %d ,",instruction_data[i]);
-            }printf("\n");
-            printf("the ic is: %d \n",ic);
+            // /* print the data array and dc counter*/
+            // printf("the ic array is: ");
+            // for ( i=0; i<ic ;i++) {
+            //   printf(" %d ,",instruction_data[i]);
+            // }printf("\n");
+            // printf("the ic is: %d \n",ic);
 
-            /* print the label array and pointer */
-            printf("the label_ptl array is: ");
-            for ( i=0; i<label_ptl ;i++) {
-              printf(" %s ,",label_names[i]);
-            }printf("\n");
-            printf("the label_ptl is: %d \n",label_ptl);
+            // /* print the label array and pointer */
+            // printf("the label_ptl array is: ");
+            // for ( i=0; i<label_ptl ;i++) {
+            //   printf(" %s ,",label_names[i]);
+            // }printf("\n");
+            // printf("the label_ptl is: %d \n",label_ptl);
         
 }
 

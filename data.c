@@ -15,6 +15,7 @@
         char name[10];
         int value;
         char spec[10]; /* specification */
+        int spec_entry; /* specification */
     } *pSymbol, *rePtl;
 
 /* counter for symble */
@@ -208,5 +209,20 @@ void add_symbole(char* name, int val, char* spec) {
     // printf("symbol_counter %d \n \n",symbol_counter);
     // inc counter
     symbol_counter ++;
+}
 
+/* if entry from the sec run insert 1 to entry falg 1 */
+void symbole_entry_flag(char *symbole_name){
+    /* we need to check if sybole exit */
+    int i;
+    for (i=0;i<symbol_counter;i++) {
+       if (strcmp(symbole_name ,pSymbol[i].name) == 0) {
+           pSymbol[i].spec_entry =1;
+           printf("symbole name: %s exist \n",symbole_name);
+           printf("spec_entry: %d  \n",pSymbol[i].spec_entry );
+           return;
+        }
+    }
+     printf("symbole name: %s mot exist \n",symbole_name);
+     /* need to return err */ 
 }

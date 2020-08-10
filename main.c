@@ -6,6 +6,7 @@
 #include "data.h"
 #include "utils.h"
 #include "first_run.h"
+#include "second_run.h"
 
 
 int main(int argc, char *argv[]){
@@ -28,6 +29,8 @@ int main(int argc, char *argv[]){
 
             /* trsfer file to first run */
             first_run(fp);
+            rewind(fp);
+            second_run(fp);
             
            
         }else 
