@@ -60,6 +60,8 @@ void des_handle(char *operated_name) {
       /* save */
       instruction_data[ic_temp] = immadte;
       ic_temp++;
+      /* up the i counter*/
+      ICF++;
 
   /*  if register */
   }else if(check_if_rgister(operated_name) ==1 ){
@@ -72,6 +74,8 @@ void des_handle(char *operated_name) {
       binary.r_des =0;
       instruction_data[ic_temp] = -999898;
       ic_temp++;
+      /* up the i counter*/
+      ICF++;
       /* add to label array */
       label_names[label_ptl] = operated_name;
       label_ptl++;
@@ -102,6 +106,8 @@ void src_handle(char *operated_name) {
       /* save */
       instruction_data[ic_temp] = immadte;
       ic_temp++;
+      /* up the i counter*/
+      ICF++;
 
   /*  if register */
   }else if(check_if_rgister(operated_name) ==1 ){
@@ -114,6 +120,8 @@ void src_handle(char *operated_name) {
       binary.r_src =0;
       instruction_data[ic_temp] = -999898;
       ic_temp++;
+      /* up the i counter*/
+      ICF++;
       /* add to label array */
       label_names[label_ptl] = operated_name;
       label_ptl++;
@@ -173,6 +181,8 @@ const void check_line(const char *line) {
                     int *k = &binary;
                     instruction_data[ic] = *k;
                     ic++;
+                    /* up the i counter*/
+                    ICF++;
                     update_pointers();
                        /* print binary code */
                     printf(" %d \n \n" ,*k );
@@ -186,6 +196,8 @@ const void check_line(const char *line) {
                     int *k = &binary;
                     instruction_data[ic] = *k;
                     ic++;
+                    /* up the i counter*/
+                    ICF++;
                     update_pointers();
                     /* print binary code */
                     printf(" %d \n \n" ,*k );
@@ -220,6 +232,8 @@ const void check_line(const char *line) {
                     int *k = &binary;
                     instruction_data[ic] = *k;
                     ic++;
+                    /* up the i counter*/
+                    ICF++;
                     update_pointers();
                      printf(" %d \n \n" ,*k );
 
@@ -261,6 +275,8 @@ const void check_line(const char *line) {
                     /* add to ic */
                     instruction_data[ic] = atoi(temp);
                     ic++; 
+                    /* up the d counter*/
+                    IDF++;
                     update_pointers();
                     /* init temp var*/
                     char temp[20];
@@ -274,6 +290,8 @@ const void check_line(const char *line) {
             /* add to ic */
             instruction_data[ic] = atoi(temp);
             ic++; 
+            /* up the d counter*/
+            IDF++;
             update_pointers();
         }
 
@@ -291,6 +309,8 @@ const void check_line(const char *line) {
               /* add to ic */
               instruction_data[ic] = ascii_code;
               ic++; 
+              /* up the d counter*/
+              IDF++;
               update_pointers();
           }
           /* add in the end of the sting 0 and up dc counter*/
@@ -299,6 +319,8 @@ const void check_line(const char *line) {
         /* add to ic */
         instruction_data[ic] = 0;
         ic++; 
+        /* up the d counter*/
+        IDF++;
         update_pointers();
         }       
 

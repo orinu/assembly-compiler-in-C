@@ -66,6 +66,7 @@ void second_run(FILE *fp) {
           /* shift left the value and mask the ARE */ 
           value = value<<3;
           value = value^are;
+
           /* insert the value to the array of label value*/
           ic_label_value[ic_label_value_ptr] = value;
           ic_label_value_ptr++;
@@ -86,12 +87,24 @@ void second_run(FILE *fp) {
             ic_label_value_ptr++;
         }
     }
+                    /* */
+        //   printf("the line is: %s \n",label_names[j]);
+        //   printf("the value is: %d \n",value);
+        //   printf("the value in hex is: %06x \n",value);
 
                 /* print the data array and dc counter*/
             printf("the data array is: ");
             int i;
             for ( i=0; i<dc ;i++) {
               printf(" %d ,",data[i]);
+            }printf("\n");
+            printf("the dc is: %d \n",dc);
+
+            /* the ps.op output */
+            printf("the hex array is: \n");
+            printf("the ICF is: %d . the IDF is: %d \n", ICF, IDF);
+            for ( i=0; i<ic ;i++) {
+            printf("the ic value is: %07d ,the value in hex is: %06x \n",i+100,instruction_data[i]);
             }printf("\n");
             printf("the dc is: %d \n",dc);
             

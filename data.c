@@ -14,7 +14,9 @@ int instruction_data[2000];
 const char *label_names[100];
 int label_ptl =0;
 
-
+/*  */
+int ICF = 0;
+int IDF = 0;
 
 void update_pointers() {
     /* update pointers */

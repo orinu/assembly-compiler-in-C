@@ -11,6 +11,9 @@ extern int instruction_data[2000];
 extern const char *label_names[100];
 extern int label_ptl;
 
+extern int ICF;
+extern int IDF;
+
 
 int get_rgister_number(char* r_name);
 int check_if_rgister(char* r_name);
