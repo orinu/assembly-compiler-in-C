@@ -21,14 +21,6 @@
         unsigned int opcode:6;
     } binary ;
 
-int dc =0;
-int ic =0;
-int ic_temp = 1;
-int data[2000];
-int instruction_data[2000];
-const char *label_names[100];
-int label_ptl =0;
-
 
 void init_binary_struct() {
         binary.are = 0;
@@ -38,19 +30,6 @@ void init_binary_struct() {
         binary.r_src = 0;
         binary.ad_src = 0;
         binary.opcode = 0;
-}
-
-void update_pointers() {
-    /* update pointers */
-    /* if labale or immadete once or two so ic and ic_temp up. the next pos for insert is ic_temp so ic = ic_temp*/
-    if (ic < ic_temp) {
-        ic = ic_temp;
-        ic_temp++;
-    }
-    /* if no labale and no immadete the pointer are equle [ic correct and temp need to +1]*/
-    if (ic == ic_temp) {
-        ic_temp++;
-    }
 }
 
 void zero_oprated() {

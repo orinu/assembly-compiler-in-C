@@ -11,3 +11,4 @@
  char* instruction_name(char *line);
 int  get_operated_number(char* line, char* command_name);
 const char * get_operated_names(char* line, int operated_number);
+const char * symbol_name_without_choko(char* name);

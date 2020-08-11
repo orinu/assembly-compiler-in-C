@@ -2,7 +2,8 @@
     "files.associations": {
         "*.js": "javascriptreact",
         "sstream": "c",
-        "system_error": "c"
+        "system_error": "c",
+        "typeinfo": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }

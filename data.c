@@ -4,6 +4,31 @@
 
 #include "data.h"
 
+
+
+int dc =0;
+int ic =0;
+int ic_temp = 1;
+int data[2000];
+int instruction_data[2000];
+const char *label_names[100];
+int label_ptl =0;
+
+
+
+void update_pointers() {
+    /* update pointers */
+    /* if labale or immadete once or two so ic and ic_temp up. the next pos for insert is ic_temp so ic = ic_temp*/
+    if (ic < ic_temp) {
+        ic = ic_temp;
+        ic_temp++;
+    }
+    /* if no labale and no immadete the pointer are equle [ic correct and temp need to +1]*/
+    if (ic == ic_temp) {
+        ic_temp++;
+    }
+}
+
  struct action {
         char name[10];
         int opcode;
@@ -225,4 +250,42 @@ void symbole_entry_flag(char *symbole_name){
     }
      printf("symbole name: %s mot exist \n",symbole_name);
      /* need to return err */ 
+}
+
+/* retun value of symbol by name */
+int get_symbol_value(char *symbole_name){
+    int i;
+    for (i=0;i<symbol_counter;i++) {
+      if (strcmp(symbole_name ,pSymbol[i].name) == 0) {
+        return pSymbol[i].value;
+      }
+    }
+    printf("err no symbol");
+}
+
+/* retun 1 if external or 0 if not */
+int check_if_external(char *symbole_name){
+int i;
+  for (i=0;i<symbol_counter;i++) {
+    if (strcmp(symbole_name ,pSymbol[i].name) == 0) {
+      if (strcmp("external" ,pSymbol[i].spec) == 0) {
+        return 1;
+      }
+    }
+  }
+return 0;
+}
+
+/* get_the_original_label */
+int got_orignal_ic(int position_label) {
+    int i;
+    int ic_postion;
+    for (i=0;i<ic;i++) {
+        if (instruction_data[i] == -999898) {
+            position_label--;
+        }
+        if (position_label == 0) {
+            return i-1;
+        }
+    }
 }

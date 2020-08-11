@@ -98,15 +98,12 @@ const char * get_operated_names(char* line, int operated_number) {
     }
 }
 
-
-// const void check_line(const char *line) {
-//     char *instruction= instruction_name(line);
-//     /*  if cmmand */
-//     if (islower(instruction[0])>0){
-//         printf("%s  \n", instruction);
-//     }
-//     /*  if spec */
-//     if ((instruction[0]) == 46){
-//         printf("%s is spec \n",instruction);
-//     }
-// }
+/* return symbol name without choko */ 
+const char * symbol_name_without_choko(char* name) {
+    char *name_without = malloc(90 * sizeof(char));
+    int i;
+    for (i=0; i<strlen(name); i++) {
+        name_without[i]=name[i+1];
+    }
+    return name_without;
+}

@@ -13,6 +13,6 @@ data.o: data.c data.h
 utils.o: utils.c utils.h
 	gcc -c -Wall -pedantic utils.c -o utils.o
 
-second_run.o: second_run.c second_run.h utils.h data.h
+second_run.o: second_run.c second_run.h utils.h data.h first_run.h
 	gcc -c -Wall -pedantic second_run.c -o second_run.o
 
