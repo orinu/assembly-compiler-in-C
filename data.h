@@ -10,6 +10,11 @@ extern int data[2000];
 extern int instruction_data[2000];
 extern const char *label_names[100];
 extern int label_ptl;
+extern const char *label_entres[100];
+extern int label_entry_ptl;
+const char *external[100];
+int external_ptl;
+
 
 extern int ICF;
 extern int IDF;

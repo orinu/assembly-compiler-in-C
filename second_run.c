@@ -56,7 +56,13 @@ void second_run(FILE *fp) {
             value = get_symbol_value(label_names[j]) ;
             /* if external the ARE bit is 1 */
             if (check_if_external(label_names[j]) == 1) {
+              /* got_orignal_ic go to the original commnd therefore need to add 1  */
+              int labal_position = got_orignal_ic(j+1) +1  ;
               are = 1;
+              printf("%s is eternal the value is  %07d\n",label_names[j],labal_position);
+              external[external_ptl] = label_names[j];
+              external[external_ptl+1] =labal_position;
+              external_ptl += 2;
             /* if not external determine ARE bits to 2 and add 100 to value*/
             }else if (check_if_external(label_names[j]) == 0) {
               are = 2;
@@ -87,6 +93,15 @@ void second_run(FILE *fp) {
             ic_label_value_ptr++;
         }
     }
+
+
+
+  
+
+            
+            
+
+
                     /* */
         //   printf("the line is: %s \n",label_names[j]);
         //   printf("the value is: %d \n",value);
@@ -107,6 +122,19 @@ void second_run(FILE *fp) {
             printf("the ic value is: %07d ,the value in hex is: %06x \n",i+100,instruction_data[i]);
             }printf("\n");
             printf("the dc is: %d \n",dc);
+
+            /* the ps.ent output */
+            printf("the ps.ent \n");
+            for ( i=0; i<label_entry_ptl ;i++) {
+            printf("%s    %07d \n", label_entres[i], get_symbol_value(label_entres[i])+100  );
+            }printf("\n");
+            
+            /* the ps.ext output */
+            printf("the ps.ext \n");
+            for ( i=0; i<external_ptl ;i++) {
+            printf("%s    %07d \n", external[i]  ,external[i+1] +100 );
+            i++;
+            }printf("\n");
             
             /* print the data array and dc counter*/
             printf("the ic array is: ");
@@ -115,11 +143,72 @@ void second_run(FILE *fp) {
             }printf("\n");
             printf("the ic is: %d \n",ic);
 
-            /* print the label array and pointer */
+            /* print the label name array and pointer */
             printf("the label_ptl array is: ");
             for ( i=0; i<label_ptl ;i++) {
             printf(" %s ,",label_names[i]);
             }printf("\n");
             printf("the label_ptl is: %d \n",label_ptl);
+
+            /* print the label entry array and pointer */
+            printf("the label_ptl array is: ");
+            for ( i=0; i<label_entry_ptl ;i++) {
+            printf(" %s ,",label_entres[i]);
+            }printf("\n");
+            printf("the label_ptl is: %d \n",label_entry_ptl);
 }
 
+
+void make_files(char *file_name) {
+    /* first file */
+    char* filename = malloc(strlen(file_name));
+    strcat(filename,file_name);
+    strcat(filename,".ob");
+
+    FILE *fd;
+    if (!(fd = fopen(filename,"w"))) {
+        fprintf(stderr,"cannot open file \n");
+        exit(0);
+    }else {
+            fprintf(fd,"%d  \t %d \n", ICF, IDF);
+            int i;
+            for ( i=0; i<ic ;i++) {
+            fprintf(fd,"%07d \t%06x \n",i+100,instruction_data[i]);
+            }
+    }
+    free(filename);
+    
+    /* second file */
+    filename = malloc(strlen(file_name));
+    strcat(filename,file_name);
+    strcat(filename,".ext");
+
+    if (!(fd = fopen(filename,"w"))) {
+        fprintf(stderr,"cannot open file \n");
+        exit(0);
+    }else { 
+        int i;
+        for ( i=0; i<external_ptl ;i++) {
+        fprintf(fd,"%s    %07d \n", external[i]  ,external[i+1] +100 );
+        i++;
+        }
+    }
+    free(filename);
+
+    /* third file */
+    filename = malloc(strlen(file_name));
+    strcat(filename,file_name);
+    strcat(filename,".ent");
+
+    if (!(fd = fopen(filename,"w"))) {
+        fprintf(stderr,"cannot open file \n");
+        exit(0);
+    }else { 
+        int i;
+        for ( i=0; i<label_entry_ptl ;i++) {
+            fprintf(fd,"%s    %07d \n", label_entres[i], get_symbol_value(label_entres[i])+100);
+         }
+        }
+    
+
+}

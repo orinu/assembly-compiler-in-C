@@ -24,23 +24,20 @@ int main(int argc, char *argv[]){
         /*  open file */
         fp = fopen(filename, "r");
         if(fp != NULL) { 
-            
             printf("reading file name  %s \n \n" , filename);
-
             /* trsfer file to first run */
             first_run(fp);
             rewind(fp);
             second_run(fp);
-            
-           
+
+            char* filename_without_extension = malloc(strlen(argv[i])+4);
+            strcpy(filename_without_extension,argv[i]);
+
+            make_files(filename_without_extension );  
         }else 
         {
             printf("fuck u all , the file not exit biaaaaatch \n");
         }
-    
-    
-
-
 	return 0;
  }
 }

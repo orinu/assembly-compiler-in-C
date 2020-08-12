@@ -13,6 +13,12 @@ int data[2000];
 int instruction_data[2000];
 const char *label_names[100];
 int label_ptl =0;
+const char *label_entres[100];
+int label_entry_ptl =0;
+const char *external[100];
+int external_ptl =0;
+
+
 
 /*  */
 int ICF = 0;
@@ -245,8 +251,9 @@ void symbole_entry_flag(char *symbole_name){
     for (i=0;i<symbol_counter;i++) {
        if (strcmp(symbole_name ,pSymbol[i].name) == 0) {
            pSymbol[i].spec_entry =1;
-           printf("symbole name: %s exist \n",symbole_name);
-           printf("spec_entry: %d  \n",pSymbol[i].spec_entry );
+           label_entres[label_entry_ptl] = pSymbol[i].name;
+           label_entry_ptl++;
+           printf("symbole name: %s \n",pSymbol[i].name);
            return;
         }
     }

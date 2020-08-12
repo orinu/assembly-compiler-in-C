@@ -7,6 +7,6 @@
 #include "first_run.h"
 
 
-
 void second_run(FILE *fp);
+void make_files(char *file_name);
 
