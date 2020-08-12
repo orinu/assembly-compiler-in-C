@@ -66,7 +66,7 @@ void second_run(FILE *fp) {
             /* if not external determine ARE bits to 2 and add 100 to value*/
             }else if (check_if_external(label_names[j]) == 0) {
               are = 2;
-              value += 100;
+              value += IC;
             }
           }
           /* shift left the value and mask the ARE */ 
@@ -119,20 +119,20 @@ void second_run(FILE *fp) {
             printf("the hex array is: \n");
             printf("the ICF is: %d . the IDF is: %d \n", ICF, IDF);
             for ( i=0; i<ic ;i++) {
-            printf("the ic value is: %07d ,the value in hex is: %06x \n",i+100,instruction_data[i]);
+            printf("the ic value is: %07d ,the value in hex is: %06x \n",i+IC,instruction_data[i]);
             }printf("\n");
             printf("the dc is: %d \n",dc);
 
             /* the ps.ent output */
             printf("the ps.ent \n");
             for ( i=0; i<label_entry_ptl ;i++) {
-            printf("%s    %07d \n", label_entres[i], get_symbol_value(label_entres[i])+100  );
+            printf("%s    %07d \n", label_entres[i], get_symbol_value(label_entres[i])+IC  );
             }printf("\n");
             
             /* the ps.ext output */
             printf("the ps.ext \n");
             for ( i=0; i<external_ptl ;i++) {
-            printf("%s    %07d \n", external[i]  ,external[i+1] +100 );
+            printf("%s    %07d \n", external[i]  ,external[i+1] +IC );
             i++;
             }printf("\n");
             
@@ -170,10 +170,16 @@ void make_files(char *file_name) {
         fprintf(stderr,"cannot open file \n");
         exit(0);
     }else {
-            fprintf(fd,"%d  \t %d \n", ICF, IDF);
+            fprintf(fd,"%d  \t\t %d \n", ICF, IDF);
             int i;
             for ( i=0; i<ic ;i++) {
-            fprintf(fd,"%07d \t%06x \n",i+100,instruction_data[i]);
+                if (instruction_data[i] >=0 ){
+                    fprintf(fd,"%07d \t%06x \n",i+IC,instruction_data[i]);
+                } else {
+                      char tmp[100];
+                      int s = sprintf(tmp, "%x", instruction_data[i]);
+                      fprintf(fd,"%07d     %.6s\n",i+IC, tmp + s - 6 );
+                }
             }
     }
     free(filename);
@@ -189,7 +195,7 @@ void make_files(char *file_name) {
     }else { 
         int i;
         for ( i=0; i<external_ptl ;i++) {
-        fprintf(fd,"%s    %07d \n", external[i]  ,external[i+1] +100 );
+        fprintf(fd,"%s    %07d \n", external[i]  ,external[i+1] +IC );
         i++;
         }
     }
@@ -206,9 +212,7 @@ void make_files(char *file_name) {
     }else { 
         int i;
         for ( i=0; i<label_entry_ptl ;i++) {
-            fprintf(fd,"%s    %07d \n", label_entres[i], get_symbol_value(label_entres[i])+100);
+            fprintf(fd,"%s    %07d \n", label_entres[i], get_symbol_value(label_entres[i])+IC);
          }
         }
-    
-
 }

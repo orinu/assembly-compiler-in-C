@@ -7,6 +7,8 @@
 
 
 int dc =0;
+int IC = 100;
+
 int ic =0;
 int ic_temp = 1;
 int data[2000];
@@ -17,7 +19,8 @@ const char *label_entres[100];
 int label_entry_ptl =0;
 const char *external[100];
 int external_ptl =0;
-
+int line_number = 0;
+int err_flag=0;
 
 
 /*  */

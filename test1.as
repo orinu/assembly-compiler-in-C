@@ -11,6 +11,7 @@ LOOP:       prn #48
             bne &END
             dec W
 .entry MAIN
+                                  
             jmp &LOOP
             add L3, L3
 END:     stop

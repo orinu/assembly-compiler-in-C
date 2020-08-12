@@ -5,6 +5,7 @@
 
 extern int dc;
 extern int ic;
+extern int IC;
 extern int ic_temp;
 extern int data[2000];
 extern int instruction_data[2000];
