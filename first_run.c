@@ -42,6 +42,11 @@ void zero_oprated() {
 void des_handle(char *operated_name) {
 /*  if immediate */
   if (operated_name[0] == 35) {
+      /* if err in lea */
+      if ( !(binary.opcode ==1 || binary.opcode ==13) ) {
+        err_flag =1;
+        printf("In line %d:\t\t that command not allowed immediate in the des operated. \n",line_number); 
+      }
       /* get number of immadte*/
       char number_of_imm[100];
       int i;
@@ -91,6 +96,11 @@ void des_handle(char *operated_name) {
 void src_handle(char *operated_name) {
 /*  if immediate # */
   if (operated_name[0] == 35) {
+      /* if err in lea */
+      if ( binary.opcode ==4 ) {
+        err_flag =1;
+        printf("In line %d:\t\t the command lea not allowed immediate in the src operated. \n",line_number); 
+      }
       /* get number of immadte*/
       char number_of_imm[100];
       int i;
@@ -111,6 +121,11 @@ void src_handle(char *operated_name) {
 
   /*  if register */
   }else if(check_if_rgister(operated_name) ==1 ){
+      /* if err in lea */
+      if ( binary.opcode ==4 ) {
+        err_flag =1;
+        printf("In line %d:\t\t the command lea not allowed register in the src operated. \n",line_number); 
+      }
     //   printf("%s is rgister\n", operated_name);
       binary.ad_src =3;
       binary.r_src = get_rgister_number(operated_name);
@@ -148,13 +163,16 @@ const void check_line(const char *line) {
 
     /*  if command */
     if (islower(instruction[0])>0){
-            printf("the line is :%s \n",line);
+            // printf("the line is :%s \n",line);
             // printf("the instruction is :%s \n",instruction);
         if (check_if_command_exist(instruction) == 0){
             // printf("the line is :%s \n",line);
             // printf("the instruction is :%s \n",instruction);
             /* cmmand not exist */ 
             /* err */
+            err_flag =1;
+            printf("In line %d: \t\t \"%s\" command not exist. \n",line_number,instruction);
+            
         }else {
             /* inesrt to the binary command the opcode, funct and are*/
             binary.opcode = get_opcode_number(instruction);
@@ -163,7 +181,13 @@ const void check_line(const char *line) {
 
             /* calculate how many opareted there are in the commannd */
             int operated_number = get_operated_number(orignal_line, instruction);
+            // printf("the opreate number is %d \n", operated_number);
             /* check if number of operat ligal compare of command */ 
+            /* eer if the operat number is incorrect*/
+            if (check_operated_number(instruction,operated_number) == 0) { 
+                 err_flag =1;
+                 printf("In line %d: \t\t the operator number of \"%s\" is not ligal. \n",line_number,instruction);
+            }
             if (check_operated_number(instruction,operated_number) == 1) {
                 /* src adress and src register is 0 cuz one oprate */
                 binary.ad_src = 0;
@@ -185,7 +209,7 @@ const void check_line(const char *line) {
                     ICF++;
                     update_pointers();
                        /* print binary code */
-                    printf(" %d \n \n" ,*k );
+                    // printf(" %d \n \n" ,*k );
                 }
                 /* handale oprate number of 1 */
                 else if (operated_number == 1) {
@@ -200,7 +224,7 @@ const void check_line(const char *line) {
                     ICF++;
                     update_pointers();
                     /* print binary code */
-                    printf(" %d \n \n" ,*k );
+                    // printf(" %d \n \n" ,*k );
 
 
                 /* handle 2 number of operat ligal*/ 
@@ -235,7 +259,7 @@ const void check_line(const char *line) {
                     /* up the i counter*/
                     ICF++;
                     update_pointers();
-                     printf(" %d \n \n" ,*k );
+                     
 
                     /* print the binary value */
                     // printf("%d \n \n" ,binary); 
@@ -250,7 +274,7 @@ const void check_line(const char *line) {
     }
     /*  if spec */
     if ((instruction[0]) == 46){
-        printf("%s is spec \n",instruction);
+        
         /* 4 handles */
 
         /* if data */
@@ -338,6 +362,7 @@ void first_run(FILE *fp) {
     char line[80];
      /* run on evrey line in the file */ 
             while(fgets(line,  MAX_ROW_LENGTH , fp) != NULL) {
+                line_number++;
                 int start_with_symbol_flag = 0;
                 /* print line*/ 
                 // printf("%s \n",line); 

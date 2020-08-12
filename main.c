@@ -29,11 +29,17 @@ int main(int argc, char *argv[]){
             first_run(fp);
             rewind(fp);
             second_run(fp);
-
-            char* filename_without_extension = malloc(strlen(argv[i])+4);
-            strcpy(filename_without_extension,argv[i]);
-
-            make_files(filename_without_extension );  
+            /* if there is no err make the output files*/
+            if (err_flag == 0) {
+              char* filename_without_extension = malloc(strlen(argv[i])+4);
+              strcpy(filename_without_extension,argv[i]);
+              make_files(filename_without_extension );  
+            }
+            /* if there are err*/
+            else {
+                printf("\n \n \nfix the error and try agian\n");
+            }
+            
         }else 
         {
             printf("fuck u all , the file not exit biaaaaatch \n");

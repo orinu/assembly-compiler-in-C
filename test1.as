@@ -10,8 +10,7 @@ LOOP:       prn #48
             cmp K, #-6
             bne &END
             dec W
-.entry MAIN
-                                  
+.entry MAIN        
             jmp &LOOP
             add L3, L3
 END:     stop

@@ -13,8 +13,10 @@ extern const char *label_names[100];
 extern int label_ptl;
 extern const char *label_entres[100];
 extern int label_entry_ptl;
-const char *external[100];
-int external_ptl;
+extern const char *external[100];
+extern int external_ptl;
+extern int line_number;
+extern int err_flag;
 
 
 extern int ICF;
@@ -33,3 +35,5 @@ void symbole_entry_flag(char *symbole_name);
 int get_symbol_value(char *symbole_name);
 int check_if_external(char *symbole_name);
 int got_orignal_ic(int position_label);
+int check_if_sybol_exist(char *symbole_name);
+

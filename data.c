@@ -215,9 +215,9 @@ int check_operated_number(char *command_name, int operated_num) {
       if (strcmp(command_name ,actions[i].name) == 0) {
         if (actions[i].operated_num == operated_num ) {
             return 1;
-        }return 0;
+        }
       }   
-    }
+    }return 0;
 } 
 
 
@@ -235,33 +235,52 @@ void add_symbole(char* name, int val, char* spec) {
         }
         pSymbol = rePtl;
     }
-    //add the income data of the symbol to the table (struct)
-    strcpy(pSymbol[symbol_counter].name ,name);
-    pSymbol[symbol_counter].value = val;
-    strcpy(pSymbol[symbol_counter].spec ,spec);
+    if (check_if_symbol_exist(name) == 0 ) {
+      //add the income data of the symbol to the table (struct)
+      strcpy(pSymbol[symbol_counter].name ,name);
+      pSymbol[symbol_counter].value = val;
+      strcpy(pSymbol[symbol_counter].spec ,spec);
+      symbol_counter ++;
+    }else {
+        err_flag =1;
+        printf("the line %d: the symbol \t\t \"%s\" symbol already exist. \n",line_number,name); 
+    }
+    
 
-    printf("name is: %s  , value is: %d  , spec is: %s \n \n",pSymbol[symbol_counter].name, pSymbol[symbol_counter].value, pSymbol[symbol_counter].spec);
+    // printf("name is: %s  , value is: %d  , spec is: %s \n \n",pSymbol[symbol_counter].name, pSymbol[symbol_counter].value, pSymbol[symbol_counter].spec);
     // printf("symbol_size_memory %d \n \n",symbol_size_memory);
     // printf("symbol_counter %d \n \n",symbol_counter);
     // inc counter
-    symbol_counter ++;
+    
 }
 
 /* if entry from the sec run insert 1 to entry falg 1 */
 void symbole_entry_flag(char *symbole_name){
-    /* we need to check if sybole exit */
+    /* check if exist*/
     int i;
     for (i=0;i<symbol_counter;i++) {
        if (strcmp(symbole_name ,pSymbol[i].name) == 0) {
            pSymbol[i].spec_entry =1;
            label_entres[label_entry_ptl] = pSymbol[i].name;
            label_entry_ptl++;
-           printf("symbole name: %s \n",pSymbol[i].name);
+        //    printf("symbole name: %s \n",pSymbol[i].name);
            return;
         }
     }
-     printf("symbole name: %s mot exist \n",symbole_name);
-     /* need to return err */ 
+    /* if not exist err*/
+    err_flag =1;
+    printf("the line %d: the symbol \t\t \"%s\" of entry symbol not exist. \n",line_number,symbole_name); 
+}
+
+/* check if symbol axist */
+int check_if_symbol_exist(char *symbole_name){
+    int i;
+    for (i=0;i<symbol_counter;i++) {
+      if (strcmp(symbole_name ,pSymbol[i].name) == 0) {
+        return 1;
+      }
+    }
+    return 0;
 }
 
 /* retun value of symbol by name */
