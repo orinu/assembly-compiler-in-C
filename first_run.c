@@ -6,37 +6,47 @@
 #include "utils.h"
 #include "first_run.h"
 
-
-
-struct bits
+union bits
 {
-    unsigned int are : 3;
-    unsigned int funct : 5;
-    unsigned int r_des : 3;
-    unsigned int ad_des : 2;
-    unsigned int r_src : 3;
-    unsigned int ad_src : 2;
-    unsigned int opcode : 6;
-} binary;
+    struct
+    {
+        unsigned int are : 3;
+        unsigned int funct : 5;
+        unsigned int r_des : 3;
+        unsigned int ad_des : 2;
+        unsigned int r_src : 3;
+        unsigned int ad_src : 2;
+        unsigned int opcode : 6;
+    } binary;
+    unsigned int value;
+} b;
+
 
 void first_run(FILE *fp)
 {
+    int start_with_symbol_flag;
+    int line_length;
+    int j;
+
     char line[MAX_ROW_LENGTH];
     /* run on every line in the file */
     while (fgets(line, MAX_ROW_LENGTH, fp) != NULL)
     {
         line_number++;
-        /* send to check_line after handel symbol*/
-        int start_with_symbol_flag = 0;
+        /* send to check_line after handel symbol */
+        start_with_symbol_flag = 0;
         /* run on evrey char in line */
-        int line_length = strlen(line);
-        int j;
+        line_length = strlen(line);
         for (j = 0; j < line_length; j++)
         {
             /* SYMBOL */
             /*  if there is ":" symbol name*/
             if (line[j] == ':')
             {
+                char *ret;
+                char symbol_name[MAX_ROW_LENGTH] = "";
+                char spec[MAX_ROW_LENGTH] = "code";
+
                 /* err if isn't space after ":" */
                 if (!isspace(line[j + 1]))
                 {
@@ -44,9 +54,6 @@ void first_run(FILE *fp)
                     printf("In line %d: \t\t expect to have space after \":\". \n", line_number);
                 }
                 start_with_symbol_flag = 1;
-                char symbol_name[30] = "";
-                char spec[30] = "code";
-                char *ret;
                 /* get the name of the symbol*/
                 strncpy(symbol_name, line, j);
                 /* looking for ".data"*/
@@ -74,21 +81,26 @@ void first_run(FILE *fp)
     }
 }
 
-/* check line function*/
-const void check_line(const char *line)
+/* check line function */
+int check_line(char *line)
 {
-    /* init binary data */
-    init_binary_struct();
-    /* memory save of the hole line */
+    int i;
+    int j = 0;
+    int operated_number;
+    int space_line;
+    char temp[MAX_ROW_LENGTH];
     char *orignal_line = malloc(MAX_ROW_LENGTH * sizeof(char));
-    strcpy(orignal_line, trim(line));
-
-    /* memory save of the instruction line */
     char *instruction = malloc(MAX_ROW_LENGTH * sizeof(char));
+
+    /* memory save of the hole line */
+    strcpy(orignal_line, trim(line));
+    /* memory save of the instruction line */
     instruction = trim(instruction_name(line));
 
-    int i;
-    int space_line = 0;
+    /* init binary data */
+    init_binary_struct();
+
+    space_line = 0;
     /* check if line is space line */
     for (i = 0; i < strlen(line); i++)
     {
@@ -105,17 +117,17 @@ const void check_line(const char *line)
         {
             /* err - cmmand not exist */
             err_flag = 1;
-            printf("In line %d: \t\t \"%s\" command not exist. \n", line_number, instruction);
+            printf("In line %d: \t\t \"%s\" command not exist.  \n", line_number, instruction);
         }
         else
         {
             /* inesrt to the binary command the opcode, funct and are */
-            binary.opcode = get_opcode_number(instruction);
-            binary.funct = get_funct_number(instruction);
-            binary.are = 4;
+            b.binary.opcode = get_opcode_number(instruction);
+            b.binary.funct = get_funct_number(instruction);
+            b.binary.are = 4;
 
             /* calculate how many opareted there are in the line */
-            int operated_number = get_operated_number(orignal_line, instruction);
+            operated_number = get_operated_number(orignal_line, instruction);
             /* compare line operate with the command operate */
             /* error - operate not equal */
             if (check_operated_number(instruction, operated_number) == 0)
@@ -123,13 +135,13 @@ const void check_line(const char *line)
                 err_flag = 1;
                 printf("In line %d: \t\t the operator number of \"%s\" is not ligal. \n", line_number, instruction);
             }
-            /* operate line equal to command operate*/
+            /* operate line equal to command operate */
             if (check_operated_number(instruction, operated_number) == 1)
             {
                 /* src adress and src register is 0 cuz one oprate */
-                binary.ad_src = 0;
-                binary.r_src = 0;
                 char *operated_name = get_operated_names(trim(line_with_out_command(orignal_line, strlen(instruction))), operated_number);
+                b.binary.ad_src = 0;
+                b.binary.r_src = 0;
 
                 /* handale oprate number of 0 */
                 if (operated_number == 0)
@@ -137,8 +149,7 @@ const void check_line(const char *line)
                     /* inesrt zero to binary code */
                     zero_oprated();
                     /* insert the binary value to instruction data */
-                    int *k = &binary;
-                    instruction_data[ic] = *k;
+                    instruction_data[ic] = b.value;
                     ic++;
                     /* up the i counter*/
                     ICF++;
@@ -150,14 +161,13 @@ const void check_line(const char *line)
                     /* handle des operate  */
                     des_handle(operated_name);
                     /* insert the binary value to instruction data */
-                    int *k = &binary;
-                    instruction_data[ic] = *k;
+                    instruction_data[ic] = b.value;
                     ic++;
-                    /* up the i counter*/
+                    /* up the i counter */
                     ICF++;
                     update_pointers();
                 }
-                /* handle 2 operate */
+                /* handle 2 operate  */
                 else if (operated_number == 2)
                 {
                     char *first_operat = malloc(MAX_ROW_LENGTH * sizeof(char));
@@ -184,8 +194,7 @@ const void check_line(const char *line)
                     src_handle(first_operat);
                     des_handle(sec_operat);
                     /* insert the binary value to instruction data */
-                    int *k = &binary;
-                    instruction_data[ic] = *k;
+                    instruction_data[ic] = b.value;
                     ic++;
                     /* up the i counter*/
                     ICF++;
@@ -208,8 +217,6 @@ const void check_line(const char *line)
             /* search for data syntax err */
             data_err(data_string);
             /* useing temp char for savind the value */
-            char temp[MAX_ROW_LENGTH];
-            int j = 0;
             for (i = 0; i < strlen(data_string); i++)
             {
                 /* search for comma */
@@ -230,7 +237,6 @@ const void check_line(const char *line)
                     IDF++;
                     update_pointers();
                     /* init temp var*/
-                    char temp[20];
                     j = 0;
                 }
             }
@@ -264,8 +270,8 @@ const void check_line(const char *line)
             if (quotation_number != 2)
             {
                 err_flag = 1;
-                printf("In line %d: \t\t string syntax error. \n", line_number, instruction);
-                return;
+                printf("In line %d: \t\t string syntax error.  \n", line_number);
+                return 0;
             }
 
             /* insert into data array */
@@ -300,60 +306,64 @@ const void check_line(const char *line)
         }
     }
     /* if space_line continue */
-    else if (space_line == 0) {}
+    else if (space_line == 0)
+    {
+    }
     /* unrecognized line */
     else
     {
         err_flag = 1;
         printf("In line %d: \t\t unrecognized syntax error. \n", line_number);
     }
+    return 0;
 }
 
 /* init data */
 void init_binary_struct()
 {
-    binary.are = 0;
-    binary.funct = 0;
-    binary.r_des = 0;
-    binary.ad_des = 0;
-    binary.r_src = 0;
-    binary.ad_src = 0;
-    binary.opcode = 0;
+    b.binary.are = 0;
+    b.binary.funct = 0;
+    b.binary.r_des = 0;
+    b.binary.ad_des = 0;
+    b.binary.r_src = 0;
+    b.binary.ad_src = 0;
+    b.binary.opcode = 0;
 }
 
 /* insert 0 to zero operate*/
 void zero_oprated()
 {
-    binary.r_des = 0;
-    binary.ad_des = 0;
-    binary.r_src = 0;
-    binary.ad_src = 0;
+    b.binary.r_des = 0;
+    b.binary.ad_des = 0;
+    b.binary.r_src = 0;
+    b.binary.ad_src = 0;
 }
 
 void des_handle(char *operated_name)
 {
+    int i;
+    char number_of_imm[MAX_ROW_LENGTH];
+    int immadte;
     /*  if immediate */
     if (operated_name[0] == 35)
     {
         /* if err in lea */
-        if (!(binary.opcode == 1 || binary.opcode == 13))
+        if (!(b.binary.opcode == 1 || b.binary.opcode == 13))
         {
             err_flag = 1;
             printf("In line %d:\t\t that command not allowed immediate in the des operated. \n", line_number);
         }
         /* get number of immediate*/
-        char number_of_imm[MAX_ROW_LENGTH];
-        int i;
         for (i = 0; i < strlen(operated_name); i++)
         {
             number_of_imm[i] = operated_name[i + 1];
         }
         /* insert the binary part of command */
-        binary.ad_des = 0;
-        binary.r_des = 0;
+        b.binary.ad_des = 0;
+        b.binary.r_des = 0;
 
         /* insert the immediate value to the ic array */
-        int immadte = atoi(number_of_imm) << 3;
+        immadte = atoi(number_of_imm) << 3;
         immadte = immadte ^ 4;
         /* save */
         instruction_data[ic_temp] = immadte;
@@ -365,18 +375,18 @@ void des_handle(char *operated_name)
     else if (check_if_rgister(operated_name) == 1)
     {
         /* err - rgister is not alow in opcode 9 */
-        if (binary.opcode == 9)
+        if (b.binary.opcode == 9)
         {
             err_flag = 1;
             printf("In line %d:\t\t the command not allowed to use rgister in the des operated. \n", line_number);
         }
-        binary.ad_des = 3;
-        binary.r_des = get_rgister_number(operated_name);
+        b.binary.ad_des = 3;
+        b.binary.r_des = get_rgister_number(operated_name);
     }
     /* if label */
     else
     {
-        binary.r_des = 0;
+        b.binary.r_des = 0;
         instruction_data[ic_temp] = LABEL_FLAG;
         ic_temp++;
         /* up the i counter*/
@@ -387,11 +397,11 @@ void des_handle(char *operated_name)
         /* check if &*/
         if (operated_name[0] == 38)
         {
-            binary.ad_des = 2;
+            b.binary.ad_des = 2;
         }
         else
         {
-            binary.ad_des = 1;
+            b.binary.ad_des = 1;
         }
     }
 }
@@ -401,23 +411,24 @@ void src_handle(char *operated_name)
     /*  if immediate # */
     if (operated_name[0] == 35)
     {
+        int i;
+        char number_of_imm[MAX_ROW_LENGTH];
+        int immadte;
         /* if err - lea cant get src immediate */
-        if (binary.opcode == 4)
+        if (b.binary.opcode == 4)
         {
             err_flag = 1;
             printf("In line %d:\t\t the command lea not allowed immediate in the src operated. \n", line_number);
         }
         /* get number of immediate*/
-        char number_of_imm[MAX_ROW_LENGTH];
-        int i;
         for (i = 0; i < strlen(operated_name); i++)
         {
             number_of_imm[i] = operated_name[i + 1];
         }
-        binary.ad_src = 0;
-        binary.r_src = 0;
+        b.binary.ad_src = 0;
+        b.binary.r_src = 0;
         /* insert the immediate value to the ic array*/
-        int immadte = atoi(number_of_imm) << 3;
+        immadte = atoi(number_of_imm) << 3;
         immadte = immadte ^ 4;
         /* save */
         instruction_data[ic_temp] = immadte;
@@ -429,18 +440,18 @@ void src_handle(char *operated_name)
     else if (check_if_rgister(operated_name) == 1)
     {
         /* if err - lea cant get src register */
-        if (binary.opcode == 4)
+        if (b.binary.opcode == 4)
         {
             err_flag = 1;
             printf("In line %d:\t\t the command lea not allowed register in the src operated. \n", line_number);
         }
-        binary.ad_src = 3;
-        binary.r_src = get_rgister_number(operated_name);
+        b.binary.ad_src = 3;
+        b.binary.r_src = get_rgister_number(operated_name);
     }
     /* if label */
     else
     {
-        binary.r_src = 0;
+        b.binary.r_src = 0;
         instruction_data[ic_temp] = LABEL_FLAG;
         ic_temp++;
         /* up the i counter*/
@@ -451,11 +462,11 @@ void src_handle(char *operated_name)
         /* check if &*/
         if (operated_name[0] == 38)
         {
-            binary.ad_src = 2;
+            b.binary.ad_src = 2;
         }
         else
         {
-            binary.ad_src = 1;
+            b.binary.ad_src = 1;
         }
     }
 }

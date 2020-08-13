@@ -4,6 +4,7 @@
 
 #include "data.h"
 
+
 /* dc and ic counter */
 int dc = 0;
 int IC = 100;
@@ -11,17 +12,17 @@ int IC = 100;
 int ic = 0;
 int ic_temp = 1;
 /* array of data */
-int data[2000];
+int data[MAX_SIZE];
 /* instruction array */
-int instruction_data[2000];
+int instruction_data[MAX_SIZE];
 /* label's name */
-const char *label_names[100];
+char *label_names[MAX_SIZE];
 int label_ptl = 0;
 /* label's entres */
-const char *label_entres[100];
+char *label_entres[MAX_SIZE];
 int label_entry_ptl = 0;
 /* external */
-const char *external[100];
+char *external[MAX_SIZE];
 int external_ptl = 0;
 /* line counter */
 int line_number = 0;
@@ -37,11 +38,11 @@ int symbol_counter = 0;
 int symbol_size_memory = 7;
 
 /* rgisters */
-const char *register_name[] = {"r0", "r1", "r2", "r3", "r4", "r5", "r6", "r7"};
+char *register_name[] = {"r0", "r1", "r2", "r3", "r4", "r5", "r6", "r7"};
 
 struct action
 {
-  char name[10];
+  char name[100];
   int opcode;
   int funct;
   int operated_num;
@@ -159,7 +160,6 @@ void update_pointers()
 /* get rigster number */
 int get_rgister_number(char *r_name)
 {
-  int count = 0;
   int i;
   for (i = 0; i < 8; i++)
   {
@@ -213,7 +213,7 @@ int get_funct_number(char *command_name)
   return 0;
 }
 
-/* check if command exist */
+/*  check if command exist */
 int check_if_command_exist(char *command_name)
 {
   int i;
@@ -235,7 +235,7 @@ int check_operated_number(char *command_name, int operated_num)
   {
     if (strcmp(command_name, actions[i].name) == 0)
     {
-      if (actions[i].operated_num == operated_num)
+      if (actions[i].operated_num  == operated_num)
       {
         return 1;
       }
@@ -253,10 +253,10 @@ void add_symbole(char *name, int val, char *spec)
     /* add memory */
     symbol_size_memory += 7;
     rePtl = (struct symbol *)realloc(pSymbol, symbol_size_memory * sizeof(struct symbol));
-    //error with relloc
+    /* error with relloc */
     if (!rePtl)
     {
-      printf("memory allocation faild");
+      printf("memory allocation faild ");
       exit(0);
     }
     pSymbol = rePtl;
@@ -297,20 +297,6 @@ void symbole_entry_flag(char *symbole_name)
   printf("the line %d: the symbol \t\t \"%s\" entry symbol not exist. \n", line_number, symbole_name);
 }
 
-/* check if symbol exist */
-int check_if_symbol_exist(char *symbole_name)
-{
-  int i;
-  for (i = 0; i < symbol_counter; i++)
-  {
-    if (strcmp(symbole_name, pSymbol[i].name) == 0)
-    {
-      return 1;
-    }
-  }
-  return 0;
-}
-
 /* retun value of symbol by name */
 int get_symbol_value(char *symbole_name)
 {
@@ -322,6 +308,7 @@ int get_symbol_value(char *symbole_name)
       return pSymbol[i].value;
     }
   }
+  return -1;
 }
 
 /* check if external */
@@ -345,10 +332,9 @@ int check_if_external(char *symbole_name)
 int got_orignal_ic(int position_label)
 {
   int i;
-  int ic_postion;
   for (i = 0; i < ic; i++)
   {
-    if (instruction_data[i] == -999898)
+    if (instruction_data[i] == LABEL_FLAG)
     {
       position_label--;
     }
@@ -357,4 +343,19 @@ int got_orignal_ic(int position_label)
       return i - 1;
     }
   }
+  return -1;
+}
+
+/* check if symbol exist */
+int check_if_symbol_exist(char *symbole_name)
+{
+  int i;
+  for (i = 0; i < symbol_counter; i++)
+  {
+    if (strcmp(symbole_name, pSymbol[i].name) == 0)
+    {
+      return 1;
+    }
+  }
+  return 0;
 }

@@ -11,7 +11,7 @@
 
 
 void first_run(FILE *fp);
-const void check_line(const char *line);
+int check_line(char *line);
 void init_binary_struct();
 void zero_oprated();
 void des_handle(char *operated_name);
