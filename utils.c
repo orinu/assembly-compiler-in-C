@@ -14,11 +14,10 @@
     for ( i=ptl, j=0; i<strlen(line); i++, j++ ) {
         new_line[j] = line[i];
     }
-    // printf("%s",new_line);
     return new_line;
 }
 
-/* return line with no starting symbol*/ 
+/* return line with no starting command */ 
  char* line_with_out_command(char *line,  int ptl ){
     char *line_with_out_command = malloc(90 * sizeof(char));
     int i;
@@ -29,6 +28,7 @@
     return line_with_out_command;
 }
 
+ /* trim function */
  char* trim(char *line) {
     char *line_with_out_spaces = malloc(90 * sizeof(char));
 
@@ -55,6 +55,7 @@
     return line_with_out_spaces;
 }
 
+ /* get instruction name*/
  char* instruction_name(char *line) {
     char *command_name;
     command_name = strtok(line, " ");
@@ -63,19 +64,14 @@
 
 /* check how many oprated there are */
 int  get_operated_number(char* line, char* command_name) {
-    /* if there is comma's return comma's+1 else ,if the first char after trim exsit return 1 else return 0 */
     int comma_counter = 0;
-    
-    // printf("line is: %s command  is: %s \n", line, command_name );
     int i;
     for ( i =0; i<strlen(line)-1 ; i++){
         if (line[i] == 44) {
             comma_counter++;
         }
     }  
-    // printf("first the comma number is %d \n", comma_counter);
     if (comma_counter == 0){
-        // printf("the line without command is: %s ",trim(line_with_out_command(line,strlen(command_name))));
         if(  trim (line_with_out_command(line,strlen(command_name)))[0]  != NULL) {
             /* return 1 operated if there is char is not space */
             return 1;   
@@ -84,22 +80,18 @@ int  get_operated_number(char* line, char* command_name) {
         /* return 1 + comma's number operated*/
     }  
     return  comma_counter+1;
-    // if ( (strcmp(command_name ,"stop") !=0 ) && (strcmp(command_name ,"rts") !=0 ) ){
-    //     operated_num= comma_counter++;
-    // }operated_num=comma_counter;  
-    // return operated_num;
 }
 
-/*  get operated names */ 
+/*  get operate names */ 
 const char * get_operated_names(char* line, int operated_number) {
     char *operated_names_values = malloc(90 * sizeof(char));
-    /* return operand name for 1 oprand*/ 
+    /* return operate name for 1 operate */ 
     if (operated_number == 1){
         return line;
-    /* return operand name for 2 oprand*/ 
+    /* return operate name for 2 operate */ 
     } else if (operated_number == 2){
         char *operated_names;
-        /* cut the twp oprated */
+        /* cut the two operate */
         operated_names = strtok(line, ",");
         while (operated_names != NULL) { 
           strcat(operated_names_values,operated_names);  
@@ -110,7 +102,7 @@ const char * get_operated_names(char* line, int operated_number) {
     }
 }
 
-/* return symbol name without choko */ 
+/* return symbol name without & */ 
 const char * symbol_name_without_choko(char* name) {
     char *name_without = malloc(90 * sizeof(char));
     int i;

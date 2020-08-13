@@ -22,10 +22,10 @@ extern int err_flag;
 extern int ICF;
 extern int IDF;
 
-
+void init_data(); 
+void update_pointers();
 int get_rgister_number(char* r_name);
 int check_if_rgister(char* r_name);
-void init_data(); 
 int get_opcode_number(char *command_name);
 int get_funct_number(char *command_name);
 int check_if_command_exist(char *command_name);
