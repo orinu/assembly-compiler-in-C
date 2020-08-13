@@ -108,7 +108,7 @@ void second_run(FILE *fp)
   ic_label_value_ptr = 0;
   for (j = 0; j < ic; j++)
   {
-    if (instruction_data[j] == -999898)
+    if (instruction_data[j] == LABEL_FLAG)
     {
       instruction_data[j] = ic_label_value[ic_label_value_ptr];
       ic_label_value_ptr++;

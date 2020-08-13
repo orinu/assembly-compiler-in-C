@@ -10,7 +10,7 @@ first_run.o: first_run.c utils.h data.c first_run.h
 data.o: data.c data.h
 	gcc -c  -Wall -pedantic data.c -o data.o
 
-utils.o: utils.c utils.h
+utils.o: utils.c utils.h data.h
 	gcc -c -Wall -pedantic utils.c -o utils.o
 
 second_run.o: second_run.c second_run.h utils.h data.h first_run.h

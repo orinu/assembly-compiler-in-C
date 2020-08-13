@@ -6,7 +6,7 @@
 #include "utils.h"
 #include "first_run.h"
 
-#define MAX_ROW_LENGTH 80
+
 
 struct bits
 {
@@ -21,7 +21,7 @@ struct bits
 
 void first_run(FILE *fp)
 {
-    char line[80];
+    char line[MAX_ROW_LENGTH];
     /* run on every line in the file */
     while (fgets(line, MAX_ROW_LENGTH, fp) != NULL)
     {
@@ -80,11 +80,11 @@ const void check_line(const char *line)
     /* init binary data */
     init_binary_struct();
     /* memory save of the hole line */
-    char *orignal_line = malloc(80 * sizeof(char));
+    char *orignal_line = malloc(MAX_ROW_LENGTH * sizeof(char));
     strcpy(orignal_line, trim(line));
 
     /* memory save of the instruction line */
-    char *instruction = malloc(80 * sizeof(char));
+    char *instruction = malloc(MAX_ROW_LENGTH * sizeof(char));
     instruction = trim(instruction_name(line));
 
     int i;
@@ -160,8 +160,8 @@ const void check_line(const char *line)
                 /* handle 2 operate */
                 else if (operated_number == 2)
                 {
-                    char *first_operat = malloc(10 * sizeof(char));
-                    char *sec_operat = malloc(10 * sizeof(char));
+                    char *first_operat = malloc(MAX_ROW_LENGTH * sizeof(char));
+                    char *sec_operat = malloc(MAX_ROW_LENGTH * sizeof(char));
                     int i = 0;
                     int j = 0;
                     /* get first op */
@@ -208,7 +208,7 @@ const void check_line(const char *line)
             /* search for data syntax err */
             data_err(data_string);
             /* useing temp char for savind the value */
-            char temp[20];
+            char temp[MAX_ROW_LENGTH];
             int j = 0;
             for (i = 0; i < strlen(data_string); i++)
             {
@@ -342,7 +342,7 @@ void des_handle(char *operated_name)
             printf("In line %d:\t\t that command not allowed immediate in the des operated. \n", line_number);
         }
         /* get number of immediate*/
-        char number_of_imm[100];
+        char number_of_imm[MAX_ROW_LENGTH];
         int i;
         for (i = 0; i < strlen(operated_name); i++)
         {
@@ -377,7 +377,7 @@ void des_handle(char *operated_name)
     else
     {
         binary.r_des = 0;
-        instruction_data[ic_temp] = -999898;
+        instruction_data[ic_temp] = LABEL_FLAG;
         ic_temp++;
         /* up the i counter*/
         ICF++;
@@ -408,7 +408,7 @@ void src_handle(char *operated_name)
             printf("In line %d:\t\t the command lea not allowed immediate in the src operated. \n", line_number);
         }
         /* get number of immediate*/
-        char number_of_imm[100];
+        char number_of_imm[MAX_ROW_LENGTH];
         int i;
         for (i = 0; i < strlen(operated_name); i++)
         {
@@ -441,7 +441,7 @@ void src_handle(char *operated_name)
     else
     {
         binary.r_src = 0;
-        instruction_data[ic_temp] = -999898;
+        instruction_data[ic_temp] = LABEL_FLAG;
         ic_temp++;
         /* up the i counter*/
         ICF++;

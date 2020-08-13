@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define MAX_ROW_LENGTH 80
+#define LABEL_FLAG -999898
+
+
 
 extern int dc;
 extern int ic;

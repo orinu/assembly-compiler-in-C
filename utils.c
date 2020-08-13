@@ -5,10 +5,11 @@
 #include <math.h>
 
 #include "utils.h"
+#include "data.h"
 
 /* return line with no starting symbol*/ 
  char* line_with_out_symbol(char *line, int ptl){
-    char *new_line = malloc(90 * sizeof(char));
+    char *new_line = malloc(MAX_ROW_LENGTH * sizeof(char));
     int i;
     int j;
     for ( i=ptl, j=0; i<strlen(line); i++, j++ ) {
@@ -19,7 +20,7 @@
 
 /* return line with no starting command */ 
  char* line_with_out_command(char *line,  int ptl ){
-    char *line_with_out_command = malloc(90 * sizeof(char));
+    char *line_with_out_command = malloc(MAX_ROW_LENGTH * sizeof(char));
     int i;
     int j;
     for ( i=ptl, j=0; i<strlen(line); i++, j++ ) {
@@ -30,7 +31,7 @@
 
  /* trim function */
  char* trim(char *line) {
-    char *line_with_out_spaces = malloc(90 * sizeof(char));
+    char *line_with_out_spaces = malloc(MAX_ROW_LENGTH * sizeof(char));
 
     int start =0;
     int end =strlen(line)-1;
@@ -84,7 +85,7 @@ int  get_operated_number(char* line, char* command_name) {
 
 /*  get operate names */ 
 const char * get_operated_names(char* line, int operated_number) {
-    char *operated_names_values = malloc(90 * sizeof(char));
+    char *operated_names_values = malloc(MAX_ROW_LENGTH * sizeof(char));
     /* return operate name for 1 operate */ 
     if (operated_number == 1){
         return line;
@@ -104,7 +105,7 @@ const char * get_operated_names(char* line, int operated_number) {
 
 /* return symbol name without & */ 
 const char * symbol_name_without_choko(char* name) {
-    char *name_without = malloc(90 * sizeof(char));
+    char *name_without = malloc(MAX_ROW_LENGTH * sizeof(char));
     int i;
     for (i=0; i<strlen(name); i++) {
         name_without[i]=name[i+1];
