@@ -269,7 +269,7 @@ void symbole_entry_flag(char *symbole_name){
     }
     /* if not exist err*/
     err_flag =1;
-    printf("the line %d: the symbol \t\t \"%s\" of entry symbol not exist. \n",line_number,symbole_name); 
+    printf("the line %d: the symbol \t\t \"%s\" entry symbol not exist. \n",line_number,symbole_name); 
 }
 
 /* check if symbol axist */
