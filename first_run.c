@@ -40,7 +40,7 @@ void first_run(FILE *fp)
         for (j = 0; j < line_length; j++)
         {
             /* SYMBOL */
-            /*  if there is ":" symbol name*/
+            /*  if there is ":" symbol name */
             if (line[j] == ':')
             {
                 char *ret;

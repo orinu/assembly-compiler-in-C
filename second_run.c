@@ -54,7 +54,7 @@ void second_run(FILE *fp)
       if (check_if_symbol_exist(new_name) == 0)
       {
         err_flag = 1;
-        printf("In line %d:\t\t the symbol \"%s\" symbol not exist. \n ", line_number, new_name);
+        printf("In line %d:\t\t the symbol \"%s\" symbol not exist. \n", line_number, new_name);
       }
       /* original label */
       src_position = get_symbol_value(new_name);

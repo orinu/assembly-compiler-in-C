@@ -39,7 +39,7 @@ int main(int argc, char *argv[]){
             }
             /* if there are err*/
             else {
-                printf("\n \n \nfix the error and try again s\n");
+                printf("\n \n \nfix the error and try again\n");
             }
             
         }else 
