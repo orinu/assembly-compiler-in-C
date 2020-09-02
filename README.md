@@ -11,8 +11,8 @@ To build the program you can use makefile by make command:
 ```
 >   make
 ```
-The assembly files need to be with an **`.as` extension** .
-After compile you can send the file names to the program as arguments (without the file extensions).
+The assembly files need to be with an **`.as` extension**.
+After compile, you can send the file names to the program as arguments (without the file extensions).
 
 To compile the files x.as, y.as, hello.as you need to run:
 ```
@@ -23,7 +23,7 @@ The output files with the same filenames and the following extensions:
 - `.ent` - Entries file
 - `.ext` - Externals file
 
-Example of input and output files can be found under `input output` folder.
+An example of input and output files can be found under `input-output` folder.
 
 ## Instruction
 
@@ -31,7 +31,7 @@ Example of input and output files can be found under `input output` folder.
 
 Every software *instruction* is encoded into a few *words* in memory, The first word is of the following structure:
 
-|  23  22  21  20  19  18   |   17  16  | 15  14  13  |   12  11  |  10  9  8  | 7  6  5  4  3 |  2  1  0  
+|  23 22 21 20 19 18   | 17 16  | 15 14 13 | 12 11 | 10 9 8  | 7 6 5 4 3 | 2 1 0  
 | ------------------  | ------ | -------- | ------ |  ------ | ----------- | ------ 
 |       Opcode        | Addressing source | Source   |   Addressing destination    |      Destination  |      Funct       |       A  R  E 
 
